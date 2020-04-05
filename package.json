@@ -4,6 +4,7 @@
 	"description": "",
 	"main": "server.js",
 	"scripts": {
+		"start": "node server.js  | pino-pretty -t | rotate-logs --config=./config/.rotate-log.js",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"author": "",
@@ -25,7 +26,13 @@
 		"prettier": "^2.0.2"
 	},
 	"dependencies": {
+		"@vrbo/pino-rotating-file": "^1.1.0",
+		"cors": "^2.8.5",
 		"dotenv": "^8.2.0",
-		"pg": "^8.0.0"
+		"express": "^4.17.1",
+		"express-pino-logger": "^4.0.0",
+		"pg": "^8.0.0",
+		"pino": "^6.1.1",
+		"pino-pretty": "^4.0.0"
 	}
 }
