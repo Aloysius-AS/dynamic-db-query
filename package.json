@@ -4,7 +4,7 @@
 	"description": "",
 	"main": "server.js",
 	"scripts": {
-		"start": "node server.js  | pino-pretty -t | rotate-logs --config=./config/.rotate-log.js",
+		"start": "nodemon server.js  | pino-pretty -t SYS:standard | rotate-logs --config=./config/.rotate-log.js",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"author": "",
@@ -31,6 +31,7 @@
 		"dotenv": "^8.2.0",
 		"express": "^4.17.1",
 		"express-pino-logger": "^4.0.0",
+		"nodemon": "^2.0.2",
 		"pg": "^8.0.0",
 		"pino": "^6.1.1",
 		"pino-pretty": "^4.0.0"

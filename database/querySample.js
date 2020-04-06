@@ -10,15 +10,12 @@ const logger = require('../logger');
 // 	logger.info(res);
 // });
 
-connectionPool.query(
-	'SELECT "circleColumn" FROM mock.query where id = 1',
-	(err, res) => {
-		// logger.info(err, res);
-		// logger.info(res);
-		// logger.info(res.rows[0].circleColumn);
-		logger.info(res.fields[0].dataTypeID);
-	}
-);
+connectionPool.query('SELECT "circleColumn" FROM mock.query', (err, res) => {
+	// logger.info(err, res);
+	// logger.info(res);
+	// logger.info(res.rows[0].circleColumn);
+	logger.info(res.fields[0].dataTypeID.toString());
+});
 
 // connectionPool.query(
 // 	'SELECT "intervalColumn" FROM mock.query where id = 1',
@@ -47,5 +44,3 @@ connectionPool.query(
 // 		logger.info(res);
 // 	}
 // );
-
-connectionPool.end();
