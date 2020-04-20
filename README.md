@@ -1,10 +1,28 @@
 # Dynamic Database Query
 
+<br/>
+
 ## Starting the Project
 
 Run the following command.
 
+For Production,
+
 > npm start
+
+For Development, either command can be executed,
+
+Without nodemon:
+
+> npm run start:dev
+
+With nodemon:
+
+> npm run start:dev-nodemon
+
+Note: .env needs to be configured.
+
+<br/>
 
 ## Logs
 
