@@ -1,9 +1,10 @@
 const router = require('express').Router();
 const logger = require('../logger');
 const connectionPool = require('../database/connectionPool');
-const dbQueryBuilder = require('../database/queryBuilder');
+
 const { APIErrorHandler } = require('../helpers/apiErrorHandler');
 const validateApiJsonInput = require('../helpers/jsonApiInputValidator');
+const QueryService = require('../services/QueryService');
 
 router.route('/circleData').get((req, res) => {
 	try {
@@ -33,53 +34,19 @@ router.route('/circleData').get((req, res) => {
 
 router.route('/pdfImage').get((req, res, next) => {
 	const { schema_name, base_table_name, columns, join, filter } = req.body;
+
 	validateApiJsonInput(schema_name, base_table_name, columns, join, filter);
 
-	/////////// Start: Query db
-	// TODO: Extract into DAL folder, returning the query promise
-	let query = dbQueryBuilder(base_table_name).withSchema(schema_name);
+	const queryServiceInstance = new QueryService(
+		schema_name,
+		base_table_name,
+		columns,
+		join,
+		filter
+	);
 
-	if (columns) {
-		query = query.column(columns);
-	}
-
-	if (join) {
-		join.forEach((joinObj) => {
-			if (joinObj.join_type === 'inner join') {
-				query = query.innerJoin(
-					joinObj.join_condition.joined_table,
-					`${base_table_name}.${joinObj.join_condition.base_table_column}`,
-					`${joinObj.join_condition.joined_table}.${joinObj.join_condition.joined_table_column}`
-				);
-			} else if (joinObj.join_type === 'left join') {
-				query = query.leftJoin(
-					joinObj.join_condition.joined_table,
-					`${base_table_name}.${joinObj.join_condition.base_table_column}`,
-					`${joinObj.join_condition.joined_table}.${joinObj.join_condition.joined_table_column}`
-				);
-			} else if (joinObj.join_type === 'right join') {
-				query = query.rightJoin(
-					joinObj.join_condition.joined_table,
-					`${base_table_name}.${joinObj.join_condition.base_table_column}`,
-					`${joinObj.join_condition.joined_table}.${joinObj.join_condition.joined_table_column}`
-				);
-			}
-		});
-	}
-
-	// TODO: filter need to add more permutations. =, !=, >, >=, <, <=, contains
-	if (filter) {
-		filter.forEach((filterObj) => {
-			if (filterObj.operator === '=') {
-				let filterArgs = {
-					[filterObj.column]: filterObj.value,
-				};
-				query = query.where(filterArgs);
-			}
-		});
-	}
-
-	query
+	queryServiceInstance
+		.getData()
 		.then((data) => {
 			return res.status(200).json(data);
 		})
@@ -95,10 +62,6 @@ router.route('/pdfImage').get((req, res, next) => {
 				)
 			);
 		});
-
-	logger.debug(`SQL statement generated from /pdfImage is: ${query.toQuery()}`);
-
-	/////////// End: Query db
 });
 
 module.exports = router;

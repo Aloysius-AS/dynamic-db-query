@@ -1,4 +1,5 @@
 /**
+ * Validates the JSON input during API call.
  *
  * @param {String} schema_name Name of database schema
  * @param {String} base_table_name Name of the base database table to perform query on
@@ -6,7 +7,10 @@
  * @param {Array[JSON]} join Details of database join
  * @param {Array[JSON]} filter Details of SQL filter
  */
-//Validates the JSON input during API call.
+
+const logger = require('../logger');
+const { APIErrorHandler } = require('../helpers/apiErrorHandler');
+
 const validateApiJsonInput = (
 	schema_name,
 	base_table_name,
