@@ -15,7 +15,7 @@ app.use(cors());
 app.use(express.json());
 app.use(expressLogger);
 
-const testApiRouter = require('./routes/testApi');
+const testApiRouter = require('./api/testApi');
 
 app.listen(port, () => {
 	logger.info(`Server is running on port: ${port}`);
