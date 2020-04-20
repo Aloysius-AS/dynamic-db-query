@@ -27,7 +27,6 @@ class QueryService {
 	}
 
 	generateStatementWithFilters(query) {
-		// TODO: filter need to add more permutations. =, !=, >, >=, <, <=, contains
 		if (this.filter) {
 			this.filter.forEach((filterObj) => {
 				switch (filterObj.operator) {
@@ -49,6 +48,12 @@ class QueryService {
 					case '<=':
 						query = query.where(filterObj.column, '<=', filterObj.value);
 						break;
+					case 'contains':
+						query = query.where(
+							filterObj.column,
+							'like',
+							`%${filterObj.value}%`
+						);
 				}
 			});
 		}
@@ -56,6 +61,7 @@ class QueryService {
 	}
 
 	generateStatementWithJoins(query) {
+		// TODO: Refactor to use Switch Case
 		if (this.join) {
 			this.join.forEach((joinObj) => {
 				if (joinObj.join_type === 'inner join') {

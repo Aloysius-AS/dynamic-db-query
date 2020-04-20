@@ -48,7 +48,7 @@ const validateApiJsonInput = (
 
 	if (filter) {
 		filter.forEach((filterObj) => {
-			let acceptableFilterTypes = ['=', '!=', '>', '>=', '<', '<='];
+			let acceptableFilterTypes = ['=', '!=', '>', '>=', '<', '<=', 'contains'];
 			if (acceptableFilterTypes.indexOf(filterObj.operator) == -1) {
 				clientApiRequestErrorMessage.push(
 					`Filter operator \'${filterObj.operator}\' is not a valid input. Acceptable values are: ${acceptableFilterTypes}`
