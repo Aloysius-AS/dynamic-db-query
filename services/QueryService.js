@@ -30,11 +30,25 @@ class QueryService {
 		// TODO: filter need to add more permutations. =, !=, >, >=, <, <=, contains
 		if (this.filter) {
 			this.filter.forEach((filterObj) => {
-				if (filterObj.operator === '=') {
-					let filterArgs = {
-						[filterObj.column]: filterObj.value,
-					};
-					query = query.where(filterArgs);
+				switch (filterObj.operator) {
+					case '=':
+						query = query.where(filterObj.column, '=', filterObj.value);
+						break;
+					case '!=':
+						query = query.whereNot(filterObj.column, '=', filterObj.value);
+						break;
+					case '>':
+						query = query.where(filterObj.column, '>', filterObj.value);
+						break;
+					case '>=':
+						query = query.where(filterObj.column, '>=', filterObj.value);
+						break;
+					case '<':
+						query = query.where(filterObj.column, '<', filterObj.value);
+						break;
+					case '<=':
+						query = query.where(filterObj.column, '<=', filterObj.value);
+						break;
 				}
 			});
 		}

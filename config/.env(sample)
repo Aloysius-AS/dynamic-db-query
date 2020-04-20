@@ -8,3 +8,4 @@ DB_PORT=
 
 # Application
 PORT=
+LOG_LEVEL=
