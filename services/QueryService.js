@@ -51,7 +51,7 @@ class QueryService {
 					case 'contains':
 						query = query.where(
 							filterObj.column,
-							'like',
+							'ILIKE',
 							`%${filterObj.value}%`
 						);
 				}
