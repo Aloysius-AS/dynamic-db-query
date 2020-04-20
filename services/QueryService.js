@@ -11,16 +11,37 @@ class QueryService {
 	}
 
 	getData() {
-		/////////// Start: Query db
-		// TODO: Extract into DAL folder, returning the query promise
-		let query = dbQueryBuilder(this.base_table_name).withSchema(
-			this.schema_name
+		let query = this.init();
+
+		query = this.generateStatementWithColumns(query);
+
+		query = this.generateStatementWithJoins(query);
+
+		query = this.generateStatementWithFilters(query);
+
+		logger.debug(
+			`SQL statement generated from /pdfImage is: ${query.toQuery()}`
 		);
 
-		if (this.columns) {
-			query = query.column(this.columns);
-		}
+		return query;
+	}
 
+	generateStatementWithFilters(query) {
+		// TODO: filter need to add more permutations. =, !=, >, >=, <, <=, contains
+		if (this.filter) {
+			this.filter.forEach((filterObj) => {
+				if (filterObj.operator === '=') {
+					let filterArgs = {
+						[filterObj.column]: filterObj.value,
+					};
+					query = query.where(filterArgs);
+				}
+			});
+		}
+		return query;
+	}
+
+	generateStatementWithJoins(query) {
 		if (this.join) {
 			this.join.forEach((joinObj) => {
 				if (joinObj.join_type === 'inner join') {
@@ -44,26 +65,18 @@ class QueryService {
 				}
 			});
 		}
-
-		// TODO: filter need to add more permutations. =, !=, >, >=, <, <=, contains
-		if (this.filter) {
-			this.filter.forEach((filterObj) => {
-				if (filterObj.operator === '=') {
-					let filterArgs = {
-						[filterObj.column]: filterObj.value,
-					};
-					query = query.where(filterArgs);
-				}
-			});
-		}
-
-		logger.debug(
-			`SQL statement generated from /pdfImage is: ${query.toQuery()}`
-		);
-
 		return query;
+	}
 
-		/////////// End: Query db
+	generateStatementWithColumns(query) {
+		if (this.columns) {
+			query = query.column(this.columns);
+		}
+		return query;
+	}
+
+	init() {
+		return dbQueryBuilder(this.base_table_name).withSchema(this.schema_name);
 	}
 }
 
