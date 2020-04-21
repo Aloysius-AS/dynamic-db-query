@@ -7,6 +7,15 @@ class APIErrorHandler extends Error {
 	}
 }
 
+function isErrorDueToInvalidJson(err) {
+	if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+		if (err.type === 'entity.parse.failed') {
+			return true;
+		}
+	}
+	return false;
+}
+
 /**
  * Handles uncaught API exceptions.
  *
@@ -15,6 +24,12 @@ class APIErrorHandler extends Error {
  */
 const handleAPIError = (err, res) => {
 	let { statusCode, errorType, errorMessage } = err;
+
+	if (isErrorDueToInvalidJson(err)) {
+		statusCode = 400;
+		errorType = 'Invalid JSON format';
+		errorMessage = err.message;
+	}
 
 	// Set default value
 	statusCode = typeof statusCode === 'undefined' ? 500 : statusCode;
