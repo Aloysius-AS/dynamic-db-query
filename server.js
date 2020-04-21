@@ -2,8 +2,6 @@ const express = require('express');
 const cors = require('cors');
 const expressPino = require('express-pino-logger');
 const logger = require('./logger');
-// require('dotenv').config();
-// require('./database/querySample');
 const { handleAPIError } = require('./helpers/apiErrorHandler');
 
 const app = express();

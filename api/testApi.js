@@ -3,7 +3,7 @@ const logger = require('../logger');
 const connectionPool = require('../database/connectionPool');
 
 const { APIErrorHandler } = require('../helpers/apiErrorHandler');
-const validateApiJsonInput = require('../helpers/jsonApiInputValidator');
+const ApiJsonInputValidator = require('../helpers/ApiJsonInputValidator');
 const QueryService = require('../services/QueryService');
 
 router.route('/circleData').get((req, res) => {
@@ -35,7 +35,14 @@ router.route('/circleData').get((req, res) => {
 router.route('/pdfImage').get((req, res, next) => {
 	const { schema_name, base_table_name, columns, join, filter } = req.body;
 
-	validateApiJsonInput(schema_name, base_table_name, columns, join, filter);
+	const apiJsonInputValidator = new ApiJsonInputValidator(
+		schema_name,
+		base_table_name,
+		columns,
+		join,
+		filter
+	);
+	apiJsonInputValidator.validate();
 
 	const queryServiceInstance = new QueryService(
 		schema_name,
