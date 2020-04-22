@@ -54,6 +54,7 @@ class QueryService {
 							'ILIKE',
 							`%${filterObj.value}%`
 						);
+						break;
 				}
 			});
 		}
@@ -61,27 +62,30 @@ class QueryService {
 	}
 
 	generateStatementWithJoins(query) {
-		// TODO: Refactor to use Switch Case
 		if (this.join) {
 			this.join.forEach((joinObj) => {
-				if (joinObj.join_type === 'inner join') {
-					query = query.innerJoin(
-						joinObj.join_condition.joined_table,
-						`${this.base_table_name}.${joinObj.join_condition.base_table_column}`,
-						`${joinObj.join_condition.joined_table}.${joinObj.join_condition.joined_table_column}`
-					);
-				} else if (joinObj.join_type === 'left join') {
-					query = query.leftJoin(
-						joinObj.join_condition.joined_table,
-						`${this.base_table_name}.${joinObj.join_condition.base_table_column}`,
-						`${joinObj.join_condition.joined_table}.${joinObj.join_condition.joined_table_column}`
-					);
-				} else if (joinObj.join_type === 'right join') {
-					query = query.rightJoin(
-						joinObj.join_condition.joined_table,
-						`${this.base_table_name}.${joinObj.join_condition.base_table_column}`,
-						`${joinObj.join_condition.joined_table}.${joinObj.join_condition.joined_table_column}`
-					);
+				switch (joinObj.join_type) {
+					case 'inner join':
+						query = query.innerJoin(
+							joinObj.join_condition.joined_table,
+							`${this.base_table_name}.${joinObj.join_condition.base_table_column}`,
+							`${joinObj.join_condition.joined_table}.${joinObj.join_condition.joined_table_column}`
+						);
+						break;
+					case 'left join':
+						query = query.leftJoin(
+							joinObj.join_condition.joined_table,
+							`${this.base_table_name}.${joinObj.join_condition.base_table_column}`,
+							`${joinObj.join_condition.joined_table}.${joinObj.join_condition.joined_table_column}`
+						);
+						break;
+					case 'right join':
+						query = query.rightJoin(
+							joinObj.join_condition.joined_table,
+							`${this.base_table_name}.${joinObj.join_condition.base_table_column}`,
+							`${joinObj.join_condition.joined_table}.${joinObj.join_condition.joined_table_column}`
+						);
+						break;
 				}
 			});
 		}
