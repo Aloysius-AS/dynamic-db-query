@@ -9,13 +9,25 @@ class ApiJsonInputValidator {
 	 * @param {Array[String]} columns Database columns to retrieve
 	 * @param {Array[JSON]} join Details of database join
 	 * @param {Array[JSON]} filter Details of SQL filter
+	 * @param {Array[String]} groupBy Details of grouping
+	 * @param {Array[String]} orderBy Details of ordering
 	 */
-	constructor(schema_name, base_table_name, columns, join, filter) {
+	constructor(
+		schema_name,
+		base_table_name,
+		columns,
+		join,
+		filter,
+		groupBy,
+		orderBy
+	) {
 		this.schema_name = schema_name;
 		this.base_table_name = base_table_name;
 		this.columns = columns;
 		this.join = join;
 		this.filter = filter;
+		this.groupBy = groupBy;
+		this.orderBy = orderBy;
 		this.clientApiRequestErrorMessage = [];
 	}
 
@@ -55,6 +67,7 @@ class ApiJsonInputValidator {
 		);
 	}
 
+	// TODO: Check if generateValidationErrorMessage_depreciated is in use
 	generateValidationErrorMessage_depreciated() {
 		let jsonErrorMsg = {
 			errorType: 'Invalid JSON request',
@@ -95,11 +108,10 @@ const apiInputValidationSchema = Joi.object()
 			operator: Joi.string()
 				.valid('=', '!=', '>', '>=', '<', '<=', 'contains')
 				.required(),
-			value: Joi.alternatives(
-				Joi.number(),
-				Joi.string().alphanum().trim()
-			).required(),
+			value: Joi.alternatives(Joi.number(), Joi.string().trim()).required(),
 		}),
+		groupBy: Joi.optional(),
+		orderBy: Joi.optional(),
 	})
 	.options({ abortEarly: false });
 

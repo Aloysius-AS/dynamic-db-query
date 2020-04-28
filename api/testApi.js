@@ -33,14 +33,24 @@ router.route('/circleData').get((req, res) => {
 // TODO: API for timescale data
 
 router.route('/pdfImage').get((req, res, next) => {
-	const { schema_name, base_table_name, columns, join, filter } = req.body;
+	const {
+		schema_name,
+		base_table_name,
+		columns,
+		join,
+		filter,
+		groupBy,
+		orderBy,
+	} = req.body;
 
 	const apiJsonInputValidator = new ApiJsonInputValidator(
 		schema_name,
 		base_table_name,
 		columns,
 		join,
-		filter
+		filter,
+		groupBy,
+		orderBy
 	);
 	apiJsonInputValidator.validate();
 
@@ -49,7 +59,9 @@ router.route('/pdfImage').get((req, res, next) => {
 		base_table_name,
 		columns,
 		join,
-		filter
+		filter,
+		groupBy,
+		orderBy
 	);
 
 	queryServiceInstance
