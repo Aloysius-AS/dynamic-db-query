@@ -66,25 +66,6 @@ class ApiJsonInputValidator {
 			this.clientApiRequestErrorMessage
 		);
 	}
-
-	// TODO: Check if generateValidationErrorMessage_depreciated is in use
-	generateValidationErrorMessage_depreciated() {
-		let jsonErrorMsg = {
-			errorType: 'Invalid JSON request',
-			errorMessage: this.clientApiRequestErrorMessage,
-		};
-
-		logger.info(
-			jsonErrorMsg,
-			`Invalid JSON input provided at route /pdfImage. The JSON validation errors are `
-		);
-
-		throw new APIErrorHandler(
-			400,
-			'Invalid JSON request',
-			this.clientApiRequestErrorMessage
-		);
-	}
 }
 
 // abortEarly in options method is for Joi to return all validation errors instead of the 1st error
