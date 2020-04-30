@@ -43,6 +43,11 @@ For Windows environment, the logs can be prettified with the following command.
 
 ### TimescaleDb
 
-When installing the timescaleDb in specific Postgres schema, use the following code
+Error:
+
+> function time_bucket(unknown, timestamp with time zone) does not exist
+
+This is likely due to installing timescaleDb in specific Postgres schema.
+We can install timescaleDb in specific schema via the following snippet.
 
 > CREATE EXTENSION IF NOT EXISTS timescaledb WITH SCHEMA <schema_name>
