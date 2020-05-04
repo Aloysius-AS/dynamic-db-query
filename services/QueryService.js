@@ -130,12 +130,18 @@ class QueryService {
 		return result === null ? false : true;
 	}
 
+	isCountFunction(str) {
+		const regExpression = /^count\(+/;
+		let result = str.match(regExpression);
+
+		return result === null ? false : true;
+	}
+
 	isRawSqlStatementRequiredForColumns() {
 		let rawSqlRequired = false;
 
 		this.columns.some((column) => {
-			//TODO: Need to check for count(*) function as well
-			if (this.isTimeBucketFunction(column)) {
+			if (this.isTimeBucketFunction(column) || this.isCountFunction(column)) {
 				rawSqlRequired = true;
 				return true;
 			}
