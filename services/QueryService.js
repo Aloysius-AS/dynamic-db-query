@@ -22,8 +22,6 @@ class QueryService {
 	}
 
 	generateSqlQuery() {
-		//TODO: Consider moving query to Object property
-
 		this.generateStatementWithColumns();
 
 		this.generateStatementWithJoins();
