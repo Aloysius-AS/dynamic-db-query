@@ -18,53 +18,77 @@ class QueryService {
 		this.filter = filter;
 		this.groupBy = groupBy;
 		this.orderBy = orderBy;
+		this.query = this.init();
 	}
 
-	getData() {
+	generateSqlQuery() {
 		//TODO: Consider moving query to Object property
-		let query = this.init();
 
-		query = this.generateStatementWithColumns(query);
+		this.generateStatementWithColumns();
 
-		query = this.generateStatementWithJoins(query);
+		this.generateStatementWithJoins();
 
-		query = this.generateStatementWithFilters(query);
+		this.generateStatementWithFilters();
 
-		query = this.generateStatementWithGroupBy(query);
+		this.generateStatementWithGroupBy();
 
-		query = this.generateStatementWithOrderBy(query);
+		this.generateStatementWithOrderBy();
 
 		logger.debug(
-			`SQL statement generated from /pdfImage is: ${query.toQuery()}`
+			`SQL statement generated from /pdfImage is: ${this.query.toQuery()}`
 		);
 
-		return query;
+		return this.query;
 	}
 
-	generateStatementWithFilters(query) {
+	generateStatementWithFilters() {
 		if (this.filter) {
 			this.filter.forEach((filterObj) => {
 				switch (filterObj.operator) {
 					case '=':
-						query = query.where(filterObj.column, '=', filterObj.value);
+						this.query = this.query.where(
+							filterObj.column,
+							'=',
+							filterObj.value
+						);
 						break;
 					case '!=':
-						query = query.whereNot(filterObj.column, '=', filterObj.value);
+						this.query = this.query.whereNot(
+							filterObj.column,
+							'=',
+							filterObj.value
+						);
 						break;
 					case '>':
-						query = query.where(filterObj.column, '>', filterObj.value);
+						this.query = this.query.where(
+							filterObj.column,
+							'>',
+							filterObj.value
+						);
 						break;
 					case '>=':
-						query = query.where(filterObj.column, '>=', filterObj.value);
+						this.query = this.query.where(
+							filterObj.column,
+							'>=',
+							filterObj.value
+						);
 						break;
 					case '<':
-						query = query.where(filterObj.column, '<', filterObj.value);
+						this.query = this.query.where(
+							filterObj.column,
+							'<',
+							filterObj.value
+						);
 						break;
 					case '<=':
-						query = query.where(filterObj.column, '<=', filterObj.value);
+						this.query = this.query.where(
+							filterObj.column,
+							'<=',
+							filterObj.value
+						);
 						break;
 					case 'contains':
-						query = query.where(
+						this.query = this.query.where(
 							filterObj.column,
 							'ILIKE',
 							`%${filterObj.value}%`
@@ -73,29 +97,28 @@ class QueryService {
 				}
 			});
 		}
-		return query;
 	}
 
-	generateStatementWithJoins(query) {
+	generateStatementWithJoins() {
 		if (this.join) {
 			this.join.forEach((joinObj) => {
 				switch (joinObj.join_type) {
 					case 'inner join':
-						query = query.innerJoin(
+						this.query = this.query.innerJoin(
 							joinObj.join_condition.joined_table,
 							`${this.base_table_name}.${joinObj.join_condition.base_table_column}`,
 							`${joinObj.join_condition.joined_table}.${joinObj.join_condition.joined_table_column}`
 						);
 						break;
 					case 'left join':
-						query = query.leftJoin(
+						this.query = this.query.leftJoin(
 							joinObj.join_condition.joined_table,
 							`${this.base_table_name}.${joinObj.join_condition.base_table_column}`,
 							`${joinObj.join_condition.joined_table}.${joinObj.join_condition.joined_table_column}`
 						);
 						break;
 					case 'right join':
-						query = query.rightJoin(
+						this.query = this.query.rightJoin(
 							joinObj.join_condition.joined_table,
 							`${this.base_table_name}.${joinObj.join_condition.base_table_column}`,
 							`${joinObj.join_condition.joined_table}.${joinObj.join_condition.joined_table_column}`
@@ -104,10 +127,9 @@ class QueryService {
 				}
 			});
 		}
-		return query;
 	}
 
-	generateStatementWithColumns(query) {
+	generateStatementWithColumns() {
 		if (this.columns) {
 			let generateRawSql = false;
 
@@ -115,12 +137,11 @@ class QueryService {
 			generateRawSql = this.isRawSqlStatementRequiredForColumns();
 
 			if (generateRawSql) {
-				query = query.column(dbQueryBuilder.raw(this.columns));
+				this.query = this.query.column(dbQueryBuilder.raw(this.columns));
 			} else {
-				query = query.column(this.columns);
+				this.query = this.query.column(this.columns);
 			}
 		}
-		return query;
 	}
 
 	isTimeBucketFunction(str) {
@@ -151,20 +172,16 @@ class QueryService {
 		return rawSqlRequired;
 	}
 
-	generateStatementWithGroupBy(query) {
+	generateStatementWithGroupBy() {
 		if (this.groupBy) {
-			query = query.groupBy(this.groupBy);
+			this.query = this.query.groupBy(this.groupBy);
 		}
-
-		return query;
 	}
 
-	generateStatementWithOrderBy(query) {
+	generateStatementWithOrderBy() {
 		if (this.orderBy) {
-			query = query.orderBy(this.orderBy);
+			this.query = this.query.orderBy(this.orderBy);
 		}
-
-		return query;
 	}
 
 	init() {

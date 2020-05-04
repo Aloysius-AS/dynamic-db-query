@@ -65,7 +65,7 @@ router.route('/pdfImage').get((req, res, next) => {
 	);
 
 	queryServiceInstance
-		.getData()
+		.generateSqlQuery()
 		.then((data) => {
 			return res.status(200).json(data);
 		})
