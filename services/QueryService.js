@@ -149,6 +149,13 @@ class QueryService {
 		return result === null ? false : true;
 	}
 
+	isTimeBucketGapFillFunction(str) {
+		const regExpression = /^time_bucket_gapfill()\({1}/;
+		let result = str.match(regExpression);
+
+		return result === null ? false : true;
+	}
+
 	isCountFunction(str) {
 		const regExpression = /^count\(+/;
 		let result = str.match(regExpression);
@@ -160,7 +167,11 @@ class QueryService {
 		let rawSqlRequired = false;
 
 		this.columns.some((column) => {
-			if (this.isTimeBucketFunction(column) || this.isCountFunction(column)) {
+			if (
+				this.isTimeBucketFunction(column) ||
+				this.isTimeBucketGapFillFunction(column) ||
+				this.isCountFunction(column)
+			) {
 				rawSqlRequired = true;
 				return true;
 			}

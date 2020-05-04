@@ -6,6 +6,21 @@ const { APIErrorHandler } = require('../helpers/apiErrorHandler');
 const ApiJsonInputValidator = require('../helpers/ApiJsonInputValidator');
 const QueryService = require('../services/QueryService');
 
+function generateErrorObject(err) {
+	let errObj = null;
+	if (err.message.includes('time_bucket')) {
+		const errMessage = err.message;
+		errObj = new APIErrorHandler(400, 'Invalid JSON request', errMessage);
+	} else {
+		errObj = new APIErrorHandler(
+			500,
+			'Internal server error',
+			'Unable to query database'
+		);
+	}
+	return errObj;
+}
+
 router.route('/circleData').get((req, res) => {
 	try {
 		logger.info('Triggered /circleData');
@@ -29,8 +44,6 @@ router.route('/circleData').get((req, res) => {
 		logger.error(e);
 	}
 });
-
-// TODO: API for timescale data
 
 router.route('/pdfImage').get((req, res, next) => {
 	const {
@@ -73,13 +86,9 @@ router.route('/pdfImage').get((req, res, next) => {
 			logger.error('Query error in /pdfimage.');
 			logger.error(err);
 
-			next(
-				new APIErrorHandler(
-					500,
-					'Internal server error',
-					'Unable to query database'
-				)
-			);
+			let errObj = generateErrorObject(err);
+
+			next(errObj);
 		});
 });
 
