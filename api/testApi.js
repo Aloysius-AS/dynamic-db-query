@@ -3,7 +3,7 @@ const logger = require('../logger');
 const connectionPool = require('../database/connectionPool');
 
 const { APIErrorHandler } = require('../helpers/apiErrorHandler');
-const ApiJsonInputValidator = require('../helpers/ApiJsonInputValidator');
+const ApiDataPointInputValidator = require('../helpers/ApiDataPointInputValidator');
 const QueryService = require('../services/QueryService');
 
 function generateErrorObject(err) {
@@ -56,7 +56,7 @@ router.route('/pdfImage').get((req, res, next) => {
 		orderBy,
 	} = req.body;
 
-	const apiJsonInputValidator = new ApiJsonInputValidator(
+	const apiDataPointInputValidator = new ApiDataPointInputValidator(
 		schema_name,
 		base_table_name,
 		columns,
@@ -65,7 +65,7 @@ router.route('/pdfImage').get((req, res, next) => {
 		groupBy,
 		orderBy
 	);
-	apiJsonInputValidator.validate();
+	apiDataPointInputValidator.validate();
 
 	const queryServiceInstance = new QueryService(
 		schema_name,

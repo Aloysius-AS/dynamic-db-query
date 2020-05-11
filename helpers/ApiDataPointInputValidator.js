@@ -2,7 +2,7 @@ const Joi = require('@hapi/joi');
 const logger = require('../logger');
 const { APIErrorHandler } = require('./apiErrorHandler');
 
-class ApiJsonInputValidator {
+class ApiDataPointInputValidator {
 	/**
 	 * @param {String} schema_name Name of database schema
 	 * @param {String} base_table_name Name of the base database table to perform query on
@@ -96,4 +96,4 @@ const apiInputValidationSchema = Joi.object()
 	})
 	.options({ abortEarly: false });
 
-module.exports = ApiJsonInputValidator;
+module.exports = ApiDataPointInputValidator;
