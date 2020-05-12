@@ -2,32 +2,18 @@ const Joi = require('@hapi/joi');
 const logger = require('../logger');
 const { APIErrorHandler } = require('./apiErrorHandler');
 
-class ApiDataPointInputValidator {
+class ApiStatInputValidator {
 	/**
 	 * @param {String} schema_name Name of database schema
 	 * @param {String} base_table_name Name of the base database table to perform query on
-	 * @param {Array[String]} columns Database columns to retrieve
-	 * @param {Array[JSON]} join Details of database join
+	 * @param {Array[JSON]} stats Columns to perform statistical aggregates on
 	 * @param {Array[JSON]} filter Details of SQL filter
-	 * @param {Array[String]} groupBy Details of grouping
-	 * @param {Array[String]} orderBy Details of ordering
 	 */
-	constructor(
-		schema_name,
-		base_table_name,
-		columns,
-		join,
-		filter,
-		groupBy,
-		orderBy
-	) {
+	constructor(schema_name, base_table_name, stats, filter) {
 		this.schema_name = schema_name;
 		this.base_table_name = base_table_name;
-		this.columns = columns;
-		this.join = join;
+		this.stats = stats;
 		this.filter = filter;
-		this.groupBy = groupBy;
-		this.orderBy = orderBy;
 		this.clientApiRequestErrorMessage = [];
 	}
 
@@ -35,8 +21,7 @@ class ApiDataPointInputValidator {
 		const validateResult = apiInputValidationSchema.validate({
 			schema_name: this.schema_name,
 			base_table_name: this.base_table_name,
-			columns: this.columns,
-			join: this.join,
+			stats: this.stats,
 			filter: this.filter,
 		});
 
@@ -57,7 +42,7 @@ class ApiDataPointInputValidator {
 
 		logger.info(
 			jsonErrorMsg,
-			`Invalid JSON input provided at route /datapoint. The JSON validation errors are `
+			`Invalid JSON input provided at route /stat. The JSON validation errors are `
 		);
 
 		throw new APIErrorHandler(
@@ -68,22 +53,47 @@ class ApiDataPointInputValidator {
 	}
 }
 
+const validAggregationOptions = [
+	'coefficient variation',
+	'covariance',
+	'deviation',
+	'geomean',
+	'kurtosis',
+	'max',
+	'mean',
+	'mean absolute deviation',
+	'mean squared error',
+	'median',
+	'median absolute deviation',
+	'min',
+	'mode',
+	'percentile',
+	'population correlation coefficient',
+	'population standard deviation',
+	'population variance',
+	'product',
+	'range',
+	'sample standard deviation',
+	'sample variance',
+	'skewness',
+	'sum',
+	'sum squared',
+	'sum squared errors',
+];
+
 // abortEarly in options method is for Joi to return all validation errors instead of the 1st error
 const apiInputValidationSchema = Joi.object()
 	.keys({
 		schema_name: Joi.string().trim().required(),
 		base_table_name: Joi.string().trim().required(),
-		columns: Joi.optional(),
-		join: Joi.array().items({
-			join_type: Joi.string()
-				.valid('inner join', 'left join', 'right join')
-				.required(),
-			join_condition: Joi.object().keys({
-				base_table_column: Joi.string().trim().required(),
-				joined_table: Joi.string().trim().required(),
-				joined_table_column: Joi.string().trim().required(),
-			}),
-		}),
+		stats: Joi.array()
+			.items({
+				column: Joi.required(),
+				aggregate: Joi.array()
+					.items(Joi.string().valid(...validAggregationOptions))
+					.required(),
+			})
+			.required(),
 		filter: Joi.array().items({
 			column: Joi.string().trim().required(),
 			operator: Joi.string()
@@ -91,9 +101,7 @@ const apiInputValidationSchema = Joi.object()
 				.required(),
 			value: Joi.alternatives(Joi.number(), Joi.string().trim()).required(),
 		}),
-		groupBy: Joi.optional(),
-		orderBy: Joi.optional(),
 	})
 	.options({ abortEarly: false });
 
-module.exports = ApiDataPointInputValidator;
+module.exports = ApiStatInputValidator;

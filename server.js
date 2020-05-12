@@ -15,6 +15,7 @@ app.use(expressLogger);
 
 const testApiRouter = require('./api/testApi');
 const datapointApiRouter = require('./api/datapoint');
+const aggregateApiRouter = require('./api/aggregate');
 
 app.listen(port, () => {
 	logger.info(`Server is running on port: ${port}`);
@@ -22,6 +23,7 @@ app.listen(port, () => {
 
 app.use('/v1/testAPI', testApiRouter);
 app.use('/v1/datapoint', datapointApiRouter);
+app.use('/v1/aggregate', aggregateApiRouter);
 
 // Important! Following error-handling middleware must be the last among other middleware and routes for it to function correctly
 app.use((err, req, res, next) => {
