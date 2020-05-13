@@ -89,7 +89,16 @@ const apiInputValidationSchema = Joi.object()
 		base_table_name: Joi.string().trim().required(),
 		stats: Joi.array()
 			.items({
-				column: Joi.required(),
+				column: Joi.required().when('aggregate', {
+					is: Joi.array().items(
+						Joi.string().valid(
+							'covariance',
+							'population correlation coefficient'
+						)
+					),
+					then: Joi.array().items().length(2), // when aggregate contains 'covariance' or 'population correlation coefficient', then columns must have 2 items
+					otherwise: Joi.array().items().length(1), // when aggregate do not contain 'covariance' or 'population correlation coefficient', then columns must have 1 item
+				}),
 				aggregate: Joi.array()
 					.items(Joi.string().valid(...validAggregationOptions))
 					.required(),
