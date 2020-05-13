@@ -39,7 +39,6 @@ class QueryService {
 		return this.query;
 	}
 
-	// TODO: consider using lower(column) to perform case insensitive search
 	generateStatementWithFilters() {
 		if (this.filter) {
 			this.filter.forEach((filterObj) => {
