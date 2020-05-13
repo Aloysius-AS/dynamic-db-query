@@ -49,24 +49,63 @@ router.route('/query').get((req, res, next) => {
 				let aggregates = element.aggregate;
 
 				aggregates.forEach((aggregate) => {
+					let dataToBeAggregated,
+						firstSetOfDataToBeAggregated,
+						secondSetOfDataToBeAggregated = [];
+
 					switch (aggregate) {
 						// TODO: Add in other aggregation functions
 						case 'covariance':
-							let firstSetOfDataToBeAggregated = structuredData[columns[0]];
-							let secondSetOfDataToBeAggregated = structuredData[columns[1]];
+							logger.debug(
+								`performing covariance on ${columns[0]} and ${columns[1]}`
+							);
+							firstSetOfDataToBeAggregated = structuredData[columns[0]];
+							secondSetOfDataToBeAggregated = structuredData[columns[1]];
 							let convarianceValue = jStat.covariance(
 								firstSetOfDataToBeAggregated,
 								secondSetOfDataToBeAggregated
 							);
 							response[columns] = {
+								...response[columns],
 								covariance: convarianceValue,
 							};
 							break;
+
 						case 'mean':
-							let dataToBeAggregated = structuredData[columns[0]];
+							logger.debug(`performing mean on ${columns[0]}`);
+							dataToBeAggregated = structuredData[columns[0]];
 							let meanValue = jStat.mean(dataToBeAggregated);
 							response[columns] = {
+								...response[columns],
 								mean: meanValue,
+							};
+							break;
+
+						case 'population correlation coefficient':
+							logger.debug(
+								`performing correlation coefficient on ${columns[0]} and ${columns[1]}`
+							);
+							firstSetOfDataToBeAggregated = structuredData[columns[0]];
+							secondSetOfDataToBeAggregated = structuredData[columns[1]];
+							let popCorrelationCoefficient = jStat.corrcoeff(
+								firstSetOfDataToBeAggregated,
+								secondSetOfDataToBeAggregated
+							);
+							response[columns] = {
+								...response[columns],
+								'population correlation coefficient': popCorrelationCoefficient,
+							};
+							break;
+
+						case 'population standard deviation':
+							logger.debug(
+								`performing population standard deviation on ${columns[0]}`
+							);
+							dataToBeAggregated = structuredData[columns[0]];
+							let popStdDev = jStat.stdev(dataToBeAggregated);
+							response[columns] = {
+								...response[columns],
+								'population standard deviation': popStdDev,
 							};
 							break;
 					}
