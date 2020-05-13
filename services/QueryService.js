@@ -46,16 +46,18 @@ class QueryService {
 				switch (filterObj.operator) {
 					case '=':
 						this.query = this.query.where(
-							filterObj.column,
-							'=',
-							filterObj.value
+							dbQueryBuilder.raw('lower(??) = lower(?)', [
+								filterObj.column,
+								filterObj.value,
+							])
 						);
 						break;
 					case '!=':
 						this.query = this.query.whereNot(
-							filterObj.column,
-							'=',
-							filterObj.value
+							dbQueryBuilder.raw('lower(??) = lower(?)', [
+								filterObj.column,
+								filterObj.value,
+							])
 						);
 						break;
 					case '>':
@@ -88,9 +90,10 @@ class QueryService {
 						break;
 					case 'contains':
 						this.query = this.query.where(
-							filterObj.column,
-							'ILIKE',
-							`%${filterObj.value}%`
+							dbQueryBuilder.raw('lower(??) ILIKE ?', [
+								filterObj.column,
+								filterObj.value.toLowerCase(),
+							])
 						);
 						break;
 				}
