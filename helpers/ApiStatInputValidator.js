@@ -81,6 +81,7 @@ const validAggregationOptions = [
 	'sum squared errors',
 ];
 
+// TODO: columns to have 2 items for covariance, rest 1 item
 // abortEarly in options method is for Joi to return all validation errors instead of the 1st error
 const apiInputValidationSchema = Joi.object()
 	.keys({
