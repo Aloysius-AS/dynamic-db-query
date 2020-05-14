@@ -1,10 +1,10 @@
 const router = require('express').Router();
 const _ = require('lodash');
-const { jStat } = require('jstat');
 const logger = require('../logger');
 
 const ApiStatInputValidator = require('../helpers/ApiStatInputValidator');
 const QueryService = require('../services/QueryService');
+const AggregateService = require('../services/AggregateService');
 
 router.route('/query').get((req, res, next) => {
 	const { schema_name, base_table_name, stats, filter } = req.body;
@@ -31,86 +31,10 @@ router.route('/query').get((req, res, next) => {
 	queryServiceInstance
 		.generateSqlQuery()
 		.then((data) => {
-			// TODO: Need to refactor this processing into another service layer which returns result
 			// TODO: Test error handling
 
-			let response = {};
-
-			// transform the data into key value pairs
-			// key = name of column
-			// value = array containing the data for column
-			let structuredData = {};
-			columns.forEach((column) => {
-				structuredData[column] = _.map(data, column);
-			});
-
-			stats.forEach((element) => {
-				let columns = element.column;
-				let aggregates = element.aggregate;
-
-				aggregates.forEach((aggregate) => {
-					let dataToBeAggregated,
-						firstSetOfDataToBeAggregated,
-						secondSetOfDataToBeAggregated = [];
-
-					switch (aggregate) {
-						// TODO: Add in other aggregation functions
-						case 'covariance':
-							logger.debug(
-								`performing covariance on ${columns[0]} and ${columns[1]}`
-							);
-							firstSetOfDataToBeAggregated = structuredData[columns[0]];
-							secondSetOfDataToBeAggregated = structuredData[columns[1]];
-							let convarianceValue = jStat.covariance(
-								firstSetOfDataToBeAggregated,
-								secondSetOfDataToBeAggregated
-							);
-							response[columns] = {
-								...response[columns],
-								covariance: convarianceValue,
-							};
-							break;
-
-						case 'mean':
-							logger.debug(`performing mean on ${columns[0]}`);
-							dataToBeAggregated = structuredData[columns[0]];
-							let meanValue = jStat.mean(dataToBeAggregated);
-							response[columns] = {
-								...response[columns],
-								mean: meanValue,
-							};
-							break;
-
-						case 'population correlation coefficient':
-							logger.debug(
-								`performing correlation coefficient on ${columns[0]} and ${columns[1]}`
-							);
-							firstSetOfDataToBeAggregated = structuredData[columns[0]];
-							secondSetOfDataToBeAggregated = structuredData[columns[1]];
-							let popCorrelationCoefficient = jStat.corrcoeff(
-								firstSetOfDataToBeAggregated,
-								secondSetOfDataToBeAggregated
-							);
-							response[columns] = {
-								...response[columns],
-								'population correlation coefficient': popCorrelationCoefficient,
-							};
-							break;
-
-						case 'population standard deviation':
-							logger.debug(
-								`performing population standard deviation on ${columns[0]}`
-							);
-							dataToBeAggregated = structuredData[columns[0]];
-							let popStdDev = jStat.stdev(dataToBeAggregated);
-							response[columns] = {
-								...response[columns],
-								'population standard deviation': popStdDev,
-							};
-							break;
-					}
-				});
-			});
+			let aggregateService = new AggregateService(data, columns);
+			let response = aggregateService.processAggregation(stats);
 
 			return res.status(200).json(response);
 		})
