@@ -52,6 +52,7 @@ router.route('/query').get((req, res, next) => {
 		orderBy
 	);
 
+	// TODO: GET PDF IMAGE got issue after implementing lower
 	queryServiceInstance
 		.generateSqlQuery()
 		.then((data) => {

@@ -1,0 +1,9 @@
+{
+	"accessList": [
+		{
+			"organisation": "BioMedDar",
+			"apiKey": "someUUID",
+			"accessibleApi": ["/v1/datapoint/query", "/v1/aggregate/query"]
+		}
+	]
+}

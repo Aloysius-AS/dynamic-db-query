@@ -3,6 +3,7 @@ const cors = require('cors');
 const expressPino = require('express-pino-logger');
 const logger = require('./logger');
 const { handleAPIError } = require('./helpers/apiErrorHandler');
+const clientApiKeyValidation = require('./helpers/authUtils');
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -12,6 +13,7 @@ const expressLogger = expressPino({ logger });
 app.use(cors());
 app.use(express.json());
 app.use(expressLogger);
+app.use(clientApiKeyValidation);
 
 const testApiRouter = require('./api/testApi');
 const datapointApiRouter = require('./api/datapoint');
