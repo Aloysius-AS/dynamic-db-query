@@ -33,7 +33,7 @@ class QueryService {
 		this.generateStatementWithOrderBy();
 
 		logger.debug(
-			`SQL statement generated from /pdfImage is: ${this.query.toQuery()}`
+			`SQL statement generated from QueryService is: ${this.query.toQuery()}`
 		);
 
 		return this.query;

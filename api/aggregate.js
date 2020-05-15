@@ -31,8 +31,6 @@ router.route('/query').get((req, res, next) => {
 	queryServiceInstance
 		.generateSqlQuery()
 		.then((data) => {
-			// TODO: Test error handling
-
 			let aggregateService = new AggregateService(data, columns);
 			let response = aggregateService.processAggregation(stats);
 
