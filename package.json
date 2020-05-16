@@ -7,7 +7,7 @@
 		"start": "node server.js | rotate-logs --config=./src/config/.app-log.js | rotate-logs --config=./src/config/.http-request-log.js",
 		"start:dev-nodemon": "nodemon -r dotenv/config server.js dotenv_config_path=src/config/.env | rotate-logs --config=./src/config/.app-log.js | rotate-logs --config=./src/config/.http-request-log.js",
 		"start:dev": "node -r dotenv/config server.js dotenv_config_path=src/config/.env | rotate-logs --config=./src/config/.app-log.js | rotate-logs --config=./src/config/.http-request-log.js",
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"test": "mocha \"./{,!(node_modules)/**/}*.test.js\""
 	},
 	"author": "",
 	"license": "ISC",
