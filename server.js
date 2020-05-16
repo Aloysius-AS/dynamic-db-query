@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const expressPino = require('express-pino-logger');
+const helmet = require('helmet');
 const logger = require('./logger');
 const { handleAPIError } = require('./helpers/apiErrorHandler');
 const clientApiKeyValidation = require('./helpers/authUtils');
@@ -10,6 +11,7 @@ const port = process.env.PORT || 5000;
 
 const expressLogger = expressPino({ logger });
 
+app.use(helmet());
 app.use(cors());
 app.use(express.json());
 app.use(expressLogger);
