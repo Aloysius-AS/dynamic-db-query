@@ -44,20 +44,22 @@ class QueryService {
 			this.filter.forEach((filterObj) => {
 				switch (filterObj.operator) {
 					case '=':
-						this.query = this.query.where(
-							dbQueryBuilder.raw('lower(??) = lower(?)', [
-								filterObj.column,
-								filterObj.value,
-							])
-						);
-						break;
 					case '!=':
-						this.query = this.query.whereNot(
-							dbQueryBuilder.raw('lower(??) = lower(?)', [
-								filterObj.column,
-								filterObj.value,
-							])
-						);
+						let rawStmt =
+							typeof filterObj.value !== 'number'
+								? 'lower(??) = lower(?)'
+								: '?? = ?';
+
+						if (filterObj.operator === '=') {
+							this.query = this.query.where(
+								dbQueryBuilder.raw(rawStmt, [filterObj.column, filterObj.value])
+							);
+						} else if (filterObj.operator === '!=') {
+							this.query = this.query.whereNot(
+								dbQueryBuilder.raw(rawStmt, [filterObj.column, filterObj.value])
+							);
+						}
+
 						break;
 					case '>':
 						this.query = this.query.where(
@@ -89,11 +91,9 @@ class QueryService {
 						break;
 					case 'contains':
 						this.query = this.query.where(
-							dbQueryBuilder.raw('lower(??) ILIKE ?', [
-								filterObj.column,
-								filterObj.value.toLowerCase(),
-							])
-						);
+							filterObj.column,
+							'ILIKE',
+							`%${filterObj.value}%`);
 						break;
 				}
 			});
