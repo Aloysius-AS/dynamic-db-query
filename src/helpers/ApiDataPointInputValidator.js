@@ -1,5 +1,5 @@
 const Joi = require('@hapi/joi');
-const logger = require('../logger');
+const logger = require('../../logger');
 const { APIErrorHandler } = require('./apiErrorHandler');
 
 class ApiDataPointInputValidator {

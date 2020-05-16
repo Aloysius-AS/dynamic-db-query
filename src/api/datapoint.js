@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const logger = require('../logger');
+const logger = require('../../logger');
 
 const { APIErrorHandler } = require('../helpers/apiErrorHandler');
 const ApiDataPointInputValidator = require('../helpers/ApiDataPointInputValidator');

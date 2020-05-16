@@ -4,9 +4,9 @@
 	"description": "",
 	"main": "server.js",
 	"scripts": {
-		"start": "node server.js | rotate-logs --config=./config/.app-log.js | rotate-logs --config=./config/.http-request-log.js",
-		"start:dev-nodemon": "nodemon -r dotenv/config server.js dotenv_config_path=config/.env | rotate-logs --config=./config/.app-log.js | rotate-logs --config=./config/.http-request-log.js",
-		"start:dev": "node -r dotenv/config server.js dotenv_config_path=config/.env | rotate-logs --config=./config/.app-log.js | rotate-logs --config=./config/.http-request-log.js",
+		"start": "node server.js | rotate-logs --config=./src/config/.app-log.js | rotate-logs --config=./src/config/.http-request-log.js",
+		"start:dev-nodemon": "nodemon -r dotenv/config server.js dotenv_config_path=src/config/.env | rotate-logs --config=./src/config/.app-log.js | rotate-logs --config=./src/config/.http-request-log.js",
+		"start:dev": "node -r dotenv/config server.js dotenv_config_path=src/config/.env | rotate-logs --config=./src/config/.app-log.js | rotate-logs --config=./src/config/.http-request-log.js",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"author": "",
@@ -14,6 +14,7 @@
 	"devDependencies": {
 		"@typescript-eslint/eslint-plugin": "^2.26.0",
 		"@typescript-eslint/parser": "^2.26.0",
+		"chai": "^4.2.0",
 		"dotenv": "^8.2.0",
 		"eslint": "^6.8.0",
 		"eslint-config-airbnb": "^18.1.0",
@@ -26,6 +27,7 @@
 		"eslint-plugin-prettier": "^3.1.2",
 		"eslint-plugin-react": "^7.19.0",
 		"eslint-plugin-react-hooks": "^2.5.0",
+		"mocha": "^7.1.2",
 		"prettier": "^2.0.2"
 	},
 	"dependencies": {

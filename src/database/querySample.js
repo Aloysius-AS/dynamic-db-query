@@ -4,7 +4,7 @@
  */
 
 var connectionPool = require('./connectionPool');
-const logger = require('../logger');
+const logger = require('../../logger');
 
 // connectionPool.query('SELECT * FROM mock.query where id = 1', (err, res) => {
 // 	logger.info(res);

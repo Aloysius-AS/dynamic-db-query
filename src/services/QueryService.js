@@ -1,4 +1,4 @@
-const logger = require('../logger');
+const logger = require('../../logger');
 const dbQueryBuilder = require('../database/queryBuilder');
 
 class QueryService {
@@ -93,7 +93,8 @@ class QueryService {
 						this.query = this.query.where(
 							filterObj.column,
 							'ILIKE',
-							`%${filterObj.value}%`);
+							`%${filterObj.value}%`
+						);
 						break;
 				}
 			});

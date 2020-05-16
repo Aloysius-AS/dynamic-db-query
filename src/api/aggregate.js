@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const _ = require('lodash');
-const logger = require('../logger');
+const logger = require('../../logger');
 
 const ApiStatInputValidator = require('../helpers/ApiStatInputValidator');
 const QueryService = require('../services/QueryService');

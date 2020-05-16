@@ -1,4 +1,4 @@
-const logger = require('../logger');
+const logger = require('../../logger');
 const _ = require('lodash');
 const { jStat } = require('jstat');
 

@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const logger = require('../logger');
+const logger = require('../../logger');
 const connectionPool = require('../database/connectionPool');
 
 const { APIErrorHandler } = require('../helpers/apiErrorHandler');

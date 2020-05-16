@@ -10,7 +10,7 @@
 			"name": "Launch Program for debug",
 			"program": "${workspaceFolder}/server.js",
 			"skipFiles": ["<node_internals>/**"],
-			"envFile": "${workspaceRoot}/config/.env"
+			"envFile": "${workspaceRoot}/src/config/.env"
 		},
 		{
 			"type": "chrome",

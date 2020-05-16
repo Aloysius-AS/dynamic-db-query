@@ -3,8 +3,8 @@ const cors = require('cors');
 const expressPino = require('express-pino-logger');
 const helmet = require('helmet');
 const logger = require('./logger');
-const { handleAPIError } = require('./helpers/apiErrorHandler');
-const clientApiKeyValidation = require('./helpers/authUtils');
+const { handleAPIError } = require('./src/helpers/apiErrorHandler');
+const clientApiKeyValidation = require('./src/helpers/authUtils');
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -17,9 +17,9 @@ app.use(express.json());
 app.use(expressLogger);
 app.use(clientApiKeyValidation);
 
-const testApiRouter = require('./api/testApi');
-const datapointApiRouter = require('./api/datapoint');
-const aggregateApiRouter = require('./api/aggregate');
+const testApiRouter = require('./src/api/testApi');
+const datapointApiRouter = require('./src/api/datapoint');
+const aggregateApiRouter = require('./src/api/aggregate');
 
 app.listen(port, () => {
 	logger.info(`Server is running on port: ${port}`);
