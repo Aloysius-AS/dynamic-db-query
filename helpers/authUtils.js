@@ -26,10 +26,7 @@ const validateApiViaJsonFile = (apiPath, clientApiKey) => {
 		return false;
 	}
 
-	let canAccessApiPath = _.includes(
-		accessData[0].accessibleApi,
-		'/v1/aggregate/query'
-	);
+	let canAccessApiPath = _.includes(accessData[0].accessibleApi, apiPath);
 
 	if (!canAccessApiPath) {
 		return false;
