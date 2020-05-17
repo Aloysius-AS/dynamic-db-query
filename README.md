@@ -39,6 +39,14 @@ For Windows environment, the logs can be prettified with the following command.
 
 <br/>
 
+## Testing
+
+Run test scripts with the following command.
+
+> npm test
+
+<br/>
+
 ## Troubleshooting
 
 ### TimescaleDb
