@@ -27,7 +27,7 @@ app.listen(port, () => {
 
 app.use('/v1/testAPI', testApiRouter);
 app.use('/v1/datapoint', datapointApiRouter);
-app.use('/v1/aggregate', aggregateApiRouter);
+app.use('/v1/stats/vector', aggregateApiRouter);
 
 // Important! Following error-handling middleware must be the last among other middleware and routes for it to function correctly
 app.use((err, req, res, next) => {
