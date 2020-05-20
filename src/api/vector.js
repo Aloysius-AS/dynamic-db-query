@@ -2,20 +2,20 @@ const router = require('express').Router();
 const _ = require('lodash');
 const logger = require('../../logger');
 
-const ApiStatInputValidator = require('../helpers/ApiStatInputValidator');
+const ApiVectorInputValidator = require('../helpers/ApiVectorInputValidator');
 const QueryService = require('../services/QueryService');
 const VectorService = require('../services/VectorService');
 
 router.route('/query').get((req, res, next) => {
 	const { schema_name, base_table_name, stats, filter } = req.body;
 
-	const apiStatInputValidator = new ApiStatInputValidator(
+	const apiVectorInputValidator = new ApiVectorInputValidator(
 		schema_name,
 		base_table_name,
 		stats,
 		filter
 	);
-	apiStatInputValidator.validate();
+	apiVectorInputValidator.validate();
 
 	// get unique values from the array of stats.column
 	let columns = _.spread(_.union)(_.map(stats, 'column'));

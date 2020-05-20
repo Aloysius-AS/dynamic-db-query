@@ -2,7 +2,7 @@ const Joi = require('@hapi/joi');
 const logger = require('../../logger');
 const { APIErrorHandler } = require('./apiErrorHandler');
 
-class ApiStatInputValidator {
+class ApiVectorInputValidator {
 	/**
 	 * @param {String} schema_name Name of database schema
 	 * @param {String} base_table_name Name of the base database table to perform query on
@@ -42,7 +42,7 @@ class ApiStatInputValidator {
 
 		logger.info(
 			jsonErrorMsg,
-			`Invalid JSON input provided at route /stat. The JSON validation errors are `
+			`Invalid JSON input provided at route /stats/vector. The JSON validation errors are `
 		);
 
 		throw new APIErrorHandler(
@@ -113,4 +113,4 @@ const apiInputValidationSchema = Joi.object()
 	})
 	.options({ abortEarly: false });
 
-module.exports = ApiStatInputValidator;
+module.exports = ApiVectorInputValidator;
