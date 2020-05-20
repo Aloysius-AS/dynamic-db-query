@@ -2,7 +2,7 @@ const logger = require('../../logger');
 const _ = require('lodash');
 const { jStat } = require('jstat');
 
-class AggregateService {
+class VectorService {
 	/**
 	 *
 	 * @param {*} rawData The data returned from querying database
@@ -122,4 +122,4 @@ class AggregateService {
 		return popStdDev;
 	}
 }
-module.exports = AggregateService;
+module.exports = VectorService;

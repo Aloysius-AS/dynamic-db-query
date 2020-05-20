@@ -2,7 +2,7 @@
 
 const expect = require('chai').expect;
 
-const AggregateService = require('../../src/services/AggregateService');
+const VectorService = require('../../src/services/VectorService');
 
 describe('Generating correct object after aggregation', function () {
 	describe('Single column aggregation request', function () {
@@ -22,8 +22,8 @@ describe('Generating correct object after aggregation', function () {
 					},
 				];
 
-				let aggregateService = new AggregateService(data, columns);
-				let result = aggregateService.processAggregation(stats);
+				let vectorService = new VectorService(data, columns);
+				let result = vectorService.processAggregation(stats);
 
 				expect(result).to.deep.equal({ height: { mean: 1.65 } });
 			});

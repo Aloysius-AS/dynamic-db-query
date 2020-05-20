@@ -19,7 +19,7 @@ app.use(clientApiKeyValidation);
 
 const testApiRouter = require('./src/api/testApi');
 const datapointApiRouter = require('./src/api/datapoint');
-const aggregateApiRouter = require('./src/api/aggregate');
+const vectorApiRouter = require('./src/api/vector');
 
 app.listen(port, () => {
 	logger.info(`Server is running on port: ${port}`);
@@ -27,7 +27,7 @@ app.listen(port, () => {
 
 app.use('/v1/testAPI', testApiRouter);
 app.use('/v1/datapoint', datapointApiRouter);
-app.use('/v1/stats/vector', aggregateApiRouter);
+app.use('/v1/stats/vector', vectorApiRouter);
 
 // Important! Following error-handling middleware must be the last among other middleware and routes for it to function correctly
 app.use((err, req, res, next) => {

@@ -4,7 +4,7 @@ const logger = require('../../logger');
 
 const ApiStatInputValidator = require('../helpers/ApiStatInputValidator');
 const QueryService = require('../services/QueryService');
-const AggregateService = require('../services/AggregateService');
+const VectorService = require('../services/VectorService');
 
 router.route('/query').get((req, res, next) => {
 	const { schema_name, base_table_name, stats, filter } = req.body;
@@ -31,13 +31,13 @@ router.route('/query').get((req, res, next) => {
 	queryServiceInstance
 		.generateSqlQuery()
 		.then((data) => {
-			let aggregateService = new AggregateService(data, columns);
-			let response = aggregateService.processAggregation(stats);
+			let vectorService = new VectorService(data, columns);
+			let response = vectorService.processAggregation(stats);
 
 			return res.status(200).json(response);
 		})
 		.catch((err) => {
-			logger.error('Query error in /aggregate/query.');
+			logger.error('Query error in /vector/query.');
 			logger.error(err);
 
 			next(err);
