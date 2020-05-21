@@ -23,23 +23,30 @@ const validateApiViaJsonFile = (apiPath, clientApiKey) => {
 	);
 
 	if (accessData.length === 0) {
-		return false;
+		return null;
 	}
 
 	let canAccessApiPath = _.includes(accessData[0].accessibleApi, apiPath);
 
 	if (!canAccessApiPath) {
-		return false;
+		return null;
 	}
 
-	return true;
+	return accessData;
 };
 
 const validateApiKey = (apiPath, clientApiKey) => {
-	let validRequest = false;
-	validRequest = validateApiViaJsonFile(apiPath, clientApiKey);
+	let accessData = validateApiViaJsonFile(apiPath, clientApiKey);
 
-	return validRequest;
+	return accessData;
+};
+
+const logAccess = (organisation, clientIpAddress, apiPath, jsonApiRequest) => {
+	logger.info(
+		`"${organisation}" from IP address ${clientIpAddress} successfully authorised to access "${apiPath}". The JSON request body is ${JSON.stringify(
+			jsonApiRequest
+		)} `
+	);
 };
 
 const clientApiKeyValidation = async (req, res, next) => {
@@ -55,8 +62,8 @@ const clientApiKeyValidation = async (req, res, next) => {
 		return res.status(400).send(errObj);
 	}
 
-	let isAuthorised = validateApiKey(req.path, clientApiKey);
-	if (!isAuthorised) {
+	let accessData = validateApiKey(req.path, clientApiKey);
+	if (!accessData) {
 		logger.warn(
 			`Unauthorised API request detected. IP Address ${clientIpAddress} tried to access path \"${req.path}\"`
 		);
@@ -68,6 +75,8 @@ const clientApiKeyValidation = async (req, res, next) => {
 
 		return res.status(400).send(errObj);
 	}
+
+	logAccess(accessData[0].organisation, clientIpAddress, req.path, req.body);
 
 	next();
 };
