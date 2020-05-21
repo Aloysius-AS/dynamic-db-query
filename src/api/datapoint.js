@@ -55,6 +55,7 @@ router.route('/query').get((req, res, next) => {
 	queryServiceInstance
 		.generateSqlQuery()
 		.then((data) => {
+			//TODO: Return query in response for completeness
 			return res.status(200).json(data);
 		})
 		.catch((err) => {

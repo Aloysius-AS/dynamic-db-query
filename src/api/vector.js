@@ -34,6 +34,7 @@ router.route('/query').get((req, res, next) => {
 			let vectorService = new VectorService(data, columns);
 			let response = vectorService.processAggregation(stats);
 
+			//TODO: Return query in response for completeness
 			return res.status(200).json(response);
 		})
 		.catch((err) => {
