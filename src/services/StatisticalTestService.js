@@ -44,7 +44,9 @@ class StatisticalTestService {
 				return result;
 
 			case TEST_TYPES.TWO_SAMPLE_T_TEST:
-				break;
+				resultObj = await this.runTwoSampleTest();
+				result = { 'p-value': resultObj.pValue() };
+				return result;
 		}
 	}
 
@@ -63,6 +65,22 @@ class StatisticalTestService {
 		let tTestOptions = {
 			mu: this.hypothetical_mean,
 			varEqual: false,
+			alpha: 0.05,
+			alternative: this.alternative_hypothesis,
+		};
+
+		const resultObj = ttest(...dataParsed, tTestOptions);
+
+		return resultObj;
+	}
+
+	async runTwoSampleTest() {
+		let dataRetrieved = await this.retrieveData();
+		let dataParsed = this.parseData(dataRetrieved);
+
+		let tTestOptions = {
+			mu: this.populations_mean_difference,
+			varEqual: JSON.parse(this.equal_variance),
 			alpha: 0.05,
 			alternative: this.alternative_hypothesis,
 		};

@@ -51,7 +51,12 @@ class ApiTestInputValidator {
 				});
 				break;
 			case TEST_TYPES.TWO_SAMPLE_T_TEST:
-				// TODO: Validate for 2 sample t test
+				validateTestSchema = doubleTTestValidationSchema.validate({
+					populations_mean_difference: this.populations_mean_difference,
+					equal_variance: this.equal_variance,
+					alternative_hypothesis: this.alternative_hypothesis,
+					datasets: this.datasets,
+				});
 				break;
 		}
 
@@ -142,6 +147,40 @@ const singleTTestValidationSchema = Joi.object()
 					.required(),
 			})
 			.length(1)
+			.required(),
+	})
+	.options({ abortEarly: false });
+
+const doubleTTestValidationSchema = Joi.object()
+	.keys({
+		populations_mean_difference: Joi.number().required(),
+		equal_variance: Joi.boolean().required(),
+		alternative_hypothesis: Joi.string()
+			.trim()
+			.valid(
+				ALT_HYPOTHESIS_VALUES.GREATER,
+				ALT_HYPOTHESIS_VALUES.LESS,
+				ALT_HYPOTHESIS_VALUES.NOT_EQUAL
+			)
+			.required(),
+		datasets: Joi.array()
+			.items({
+				table: Joi.string().required(),
+				column: Joi.string().required(),
+				filter: Joi.array()
+					.items({
+						column: Joi.string().trim().required(),
+						operator: Joi.string()
+							.valid('=', '!=', '>', '>=', '<', '<=', 'contains')
+							.required(),
+						value: Joi.alternatives(
+							Joi.number(),
+							Joi.string().trim()
+						).required(),
+					})
+					.required(),
+			})
+			.length(2)
 			.required(),
 	})
 	.options({ abortEarly: false });
