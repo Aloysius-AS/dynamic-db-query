@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const { jStat } = require('jstat');
+const ttest = require('ttest');
 
 const logger = require('../../logger');
 const { TEST_TYPES } = require('../constants');
@@ -27,14 +28,20 @@ class StatisticalTestService {
 	}
 
 	async runTest() {
+		let pValue,
+			result,
+			resultObj = null;
+
 		switch (this.test_type) {
 			case TEST_TYPES.F_TEST:
-				let pValue = await this.runFTest_Anova();
-				let result = { 'p-value': pValue };
+				pValue = await this.runFTest_Anova();
+				result = { 'p-value': pValue };
 				return result;
 
 			case TEST_TYPES.ONE_SAMPLE_T_TEST:
-				break;
+				resultObj = await this.runOneSampleTTest();
+				result = { 'p-value': resultObj.pValue() };
+				return result;
 
 			case TEST_TYPES.TWO_SAMPLE_T_TEST:
 				break;
@@ -43,15 +50,26 @@ class StatisticalTestService {
 
 	async runFTest_Anova() {
 		let dataRetrieved = await this.retrieveData();
-		let dataParsed = [];
-
-		dataRetrieved.forEach((dataArray) => {
-			let columnName = Object.keys(dataArray[0])[0];
-			dataParsed.push(_.map(dataArray, columnName));
-		});
+		let dataParsed = this.parseData(dataRetrieved);
 
 		let pValue = jStat.anovaftest(...dataParsed);
 		return pValue;
+	}
+
+	async runOneSampleTTest() {
+		let dataRetrieved = await this.retrieveData();
+		let dataParsed = this.parseData(dataRetrieved);
+
+		let tTestOptions = {
+			mu: this.hypothetical_mean,
+			varEqual: false,
+			alpha: 0.05,
+			alternative: this.alternative_hypothesis,
+		};
+
+		const resultObj = ttest(...dataParsed, tTestOptions);
+
+		return resultObj;
 	}
 
 	async retrieveData() {
@@ -80,6 +98,24 @@ class StatisticalTestService {
 		}
 
 		return dataRetrieved;
+	}
+
+	parseData(data) {
+		let dataParsed = [];
+
+		data.forEach((dataArray) => {
+			let columnName = Object.keys(dataArray[0])[0];
+			dataParsed.push(_.map(dataArray, columnName));
+		});
+
+		// remove elements that are null, '' or undefined
+		for (let i = 0; i < dataParsed.length; i++) {
+			dataParsed[i] = dataParsed[i].filter(function (el) {
+				return el !== null && el !== '' && el !== undefined;
+			});
+		}
+
+		return dataParsed;
 	}
 }
 

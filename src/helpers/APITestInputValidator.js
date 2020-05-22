@@ -1,7 +1,7 @@
 const Joi = require('@hapi/joi');
 const logger = require('../../logger');
 const { APIErrorHandler } = require('./apiErrorHandler');
-const { TEST_TYPES } = require('../constants');
+const { TEST_TYPES, ALT_HYPOTHESIS_VALUES } = require('../constants');
 
 class ApiTestInputValidator {
 	constructor(
@@ -44,7 +44,11 @@ class ApiTestInputValidator {
 				});
 				break;
 			case TEST_TYPES.ONE_SAMPLE_T_TEST:
-				// TODO: Validate for 1 sample t test
+				validateTestSchema = singleTTestValidationSchema.validate({
+					hypothetical_mean: this.hypothetical_mean,
+					alternative_hypothesis: this.alternative_hypothesis,
+					datasets: this.datasets,
+				});
 				break;
 			case TEST_TYPES.TWO_SAMPLE_T_TEST:
 				// TODO: Validate for 2 sample t test
@@ -105,6 +109,39 @@ const fTestValidationSchema = Joi.object()
 					.required(),
 			})
 			.min(2)
+			.required(),
+	})
+	.options({ abortEarly: false });
+
+const singleTTestValidationSchema = Joi.object()
+	.keys({
+		hypothetical_mean: Joi.number().required(),
+		alternative_hypothesis: Joi.string()
+			.trim()
+			.valid(
+				ALT_HYPOTHESIS_VALUES.GREATER,
+				ALT_HYPOTHESIS_VALUES.LESS,
+				ALT_HYPOTHESIS_VALUES.NOT_EQUAL
+			)
+			.required(),
+		datasets: Joi.array()
+			.items({
+				table: Joi.string().required(),
+				column: Joi.string().required(),
+				filter: Joi.array()
+					.items({
+						column: Joi.string().trim().required(),
+						operator: Joi.string()
+							.valid('=', '!=', '>', '>=', '<', '<=', 'contains')
+							.required(),
+						value: Joi.alternatives(
+							Joi.number(),
+							Joi.string().trim()
+						).required(),
+					})
+					.required(),
+			})
+			.length(1)
 			.required(),
 	})
 	.options({ abortEarly: false });
