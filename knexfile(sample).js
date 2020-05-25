@@ -4,7 +4,7 @@ module.exports = {
 	development: {
 		client: 'postgresql',
 		connection: {
-			host: '127.0.0.0',
+			host: '127.0.0.1',
 			user: '',
 			password: '',
 			database: '',
@@ -13,6 +13,27 @@ module.exports = {
 		pool: {
 			min: 2,
 			max: 10,
+		},
+	},
+
+	test: {
+		client: 'postgresql',
+		connection: {
+			host: '127.0.0.1',
+			user: '',
+			password: '',
+			database: '',
+			charset: 'utf8',
+		},
+		pool: {
+			min: 2,
+			max: 10,
+		},
+		migrations: {
+			directory: __dirname + '/src/database/migrations',
+		},
+		seeds: {
+			directory: __dirname + '/src/database/seeds',
 		},
 	},
 
