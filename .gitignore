@@ -105,3 +105,4 @@ dist
 
 # Custom application
 api/access.json
+knexfile.js
