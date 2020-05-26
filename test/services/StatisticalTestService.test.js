@@ -8,16 +8,22 @@ let knex = require('../../src//database/queryBuilder');
 describe('F-Test (Anova)', function () {
 	let statsTestServiceInstance = null;
 
+	beforeEach(async () => {
+		await knex.migrate
+			.rollback()
+			.then(() => knex.migrate.latest())
+			.then(() => knex.seed.run())
+			.catch((err) => {
+				console.log(err);
+			});
+	});
+
+	after(() => {
+		knex.destroy();
+	});
+
 	describe('Reading and Parsing data', function () {
 		it('Should read and parse data correctly', async function () {
-			await knex.migrate
-				.rollback()
-				.then(() => knex.migrate.latest())
-				.then(() => knex.seed.run())
-				.catch((err) => {
-					console.log(err);
-				});
-
 			let dataset = [
 				//#region Init data
 				{
@@ -79,9 +85,6 @@ describe('F-Test (Anova)', function () {
 				})
 				.catch((err) => {
 					console.log(err);
-				})
-				.finally(() => {
-					knex.destroy();
 				});
 
 			expect(dataParsed).to.deep.equal(expectedResult);
