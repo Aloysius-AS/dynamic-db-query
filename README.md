@@ -58,6 +58,7 @@ For Windows environment, the logs can be prettified with the following command.
 
 > NODE_ENV=test
 
+<br />
 </p>
 
 <p>
@@ -66,12 +67,13 @@ For Windows environment, the logs can be prettified with the following command.
 It is recommended to use a different database name from Development. This is because
 the database would be seeded and deleted during execution of the tests.
 
+<br />
 </p>
 
 <p>
-
 3. Create the database with the name and other information specified in the above step.
 
+<br />
 </p>
 
 <p>
@@ -79,6 +81,7 @@ the database would be seeded and deleted during execution of the tests.
 
 > npm test
 
+<br />
 </p>
 
 <br/>
