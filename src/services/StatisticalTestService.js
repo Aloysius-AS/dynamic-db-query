@@ -7,7 +7,6 @@ const { TEST_TYPES } = require('../constants');
 const QueryService = require('./QueryService');
 
 class StatisticalTestService {
-	//TODO: Create the test for this service
 	constructor(
 		schema_name,
 		test_type,
