@@ -58,7 +58,8 @@ For Windows environment, the logs can be prettified with the following command.
 
 > NODE_ENV=test
 </p>
-<br /><br />
+
+<br />
 
 <p>
 2. In knexfile.js, update the database information in the test property.
@@ -66,7 +67,8 @@ For Windows environment, the logs can be prettified with the following command.
 It is recommended to use a different database name from Development. This is because
 the database would be seeded and deleted during execution of the tests.
 </p>
-<br /><br />
+
+<br />
 
 <p>
 3. Create the database with the name and other information specified in the above step.
@@ -79,6 +81,8 @@ the database would be seeded and deleted during execution of the tests.
 
 > npm test
 </p>
+
+<br />
 
 
 ## Troubleshooting
