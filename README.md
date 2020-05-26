@@ -73,7 +73,9 @@ the database would be seeded and deleted during execution of the tests.
 <p>
 3. Create the database with the name and other information specified in the above step.
 
-<br />
+
+<br /><br />
+
 </p>
 
 <p>
