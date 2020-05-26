@@ -2,7 +2,7 @@ const logger = require('../../logger');
 
 if (!process.env.NODE_ENV) {
 	const path = require('path');
-	let envRelativePath = '../config/.env';
+	let envRelativePath = '../../.env';
 	require('dotenv').config({ path: path.resolve(__dirname, envRelativePath) });
 }
 

@@ -4,10 +4,10 @@
 	"description": "",
 	"main": "server.js",
 	"scripts": {
-		"start": "node -r dotenv/config server.js dotenv_config_path=src/config/.env | rotate-logs --config=./src/config/.app-log.js | rotate-logs --config=./src/config/.http-request-log.js",
-		"start:dev-nodemon": "nodemon -r dotenv/config server.js dotenv_config_path=src/config/.env | rotate-logs --config=./src/config/.app-log.js | rotate-logs --config=./src/config/.http-request-log.js",
-		"start:dev": "node -r dotenv/config server.js dotenv_config_path=src/config/.env | rotate-logs --config=./src/config/.app-log.js | rotate-logs --config=./src/config/.http-request-log.js",
-		"test": "mocha -r dotenv/config dotenv_config_path=src/config/.env \"./{,!(node_modules)/**/}*.test.js\" "
+		"start": "node -r dotenv/config server.js | rotate-logs --config=./src/config/.app-log.js | rotate-logs --config=./src/config/.http-request-log.js",
+		"start:dev-nodemon": "nodemon -r dotenv/config server.js | rotate-logs --config=./src/config/.app-log.js | rotate-logs --config=./src/config/.http-request-log.js",
+		"start:dev": "node -r dotenv/config server.js | rotate-logs --config=./src/config/.app-log.js | rotate-logs --config=./src/config/.http-request-log.js",
+		"test": "mocha -r dotenv/config \"./{,!(node_modules)/**/}*.test.js\" "
 	},
 	"author": "",
 	"license": "ISC",

@@ -4,10 +4,10 @@
 
 ## Configuring the Project
 
-In the root of the project, create knexfile.js. knexfile(sample).js is provided for reference.
+In the root of the project, create knexfile.js. knexfile(sample).js is provided for reference.\
 Update knexfile.js with the information of the database for the required environments (development, staging, production).
 
-Then create .env file in src/config. .env(sample) is provided for reference.
+Then create .env file in root of the project. .env(sample) is provided for reference.
 Update .env file.
 
 - NODE_ENV: indicates which environment configuration (as specified in knexfile.js) to load for the database
