@@ -53,6 +53,10 @@ For Windows environment, the logs can be prettified with the following command.
 
 ## Testing
 
+In .env, change the following variable to the 'test' environment.
+
+> NODE_ENV=test
+
 Run test scripts with the following command.
 
 > npm test

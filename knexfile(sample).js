@@ -22,7 +22,7 @@ module.exports = {
 			host: '127.0.0.1',
 			user: '',
 			password: '',
-			database: '',
+			database: 'ETL_Mock_Testing',
 			charset: 'utf8',
 		},
 		pool: {
