@@ -1,10 +1,8 @@
-exports.seed = (knex, Promise) => {
-	// Deletes ALL existing entries
-	return knex('ftest')
+exports.seed = (knex, Promise) =>
+	knex('ftest')
 		.del()
-		.then(() => {
-			// Inserts seed entries
-			return knex('ftest').insert([
+		.then(() =>
+			knex('ftest').insert([
 				{
 					sex_re: 'male',
 					rwt_m: 0.439024389,
@@ -53,6 +51,5 @@ exports.seed = (knex, Promise) => {
 					rwt_m: 0.512820542,
 					ef_group: 'HFpEF',
 				},
-			]);
-		});
-};
+			])
+		);
