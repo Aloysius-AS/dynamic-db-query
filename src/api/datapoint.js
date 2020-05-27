@@ -1,8 +1,9 @@
 const router = require('express').Router();
-const logger = require('../../logger');
 
-const { APIErrorHandler } = require('../helpers/apiErrorHandler');
+const { API_RESPONSE_FILTER_APPLIED } = require('../constants');
 const ApiDataPointInputValidator = require('../helpers/ApiDataPointInputValidator');
+const { APIErrorHandler } = require('../helpers/apiErrorHandler');
+const logger = require('../../logger');
 const QueryService = require('../services/QueryService');
 
 function generateErrorObject(err) {
@@ -55,8 +56,11 @@ router.route('/query').get((req, res, next) => {
 	queryServiceInstance
 		.generateSqlQuery()
 		.then((data) => {
-			//TODO: Return query in response for completeness
-			return res.status(200).json(data);
+			let response = {
+				...data,
+				[API_RESPONSE_FILTER_APPLIED]: req.body.filter,
+			};
+			return res.status(200).json(response);
 		})
 		.catch((err) => {
 			logger.error('Query error in /query.');

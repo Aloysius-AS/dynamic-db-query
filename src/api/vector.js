@@ -1,8 +1,9 @@
 const router = require('express').Router();
 const _ = require('lodash');
-const logger = require('../../logger');
 
 const ApiVectorInputValidator = require('../helpers/ApiVectorInputValidator');
+const { API_RESPONSE_FILTER_APPLIED } = require('../constants');
+const logger = require('../../logger');
 const QueryService = require('../services/QueryService');
 const VectorService = require('../services/VectorService');
 
@@ -32,9 +33,13 @@ router.route('/query').get((req, res, next) => {
 		.generateSqlQuery()
 		.then((data) => {
 			let vectorService = new VectorService(data, columns);
-			let response = vectorService.processAggregation(stats);
+			let result = vectorService.processAggregation(stats);
 
-			//TODO: Return query in response for completeness
+			let response = {
+				...result,
+				[API_RESPONSE_FILTER_APPLIED]: req.body.filter,
+			};
+
 			return res.status(200).json(response);
 		})
 		.catch((err) => {

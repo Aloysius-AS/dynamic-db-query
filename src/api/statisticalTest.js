@@ -1,8 +1,9 @@
 const router = require('express').Router();
 const _ = require('lodash');
-const logger = require('../../logger');
 
+const { API_RESPONSE_DATASET_APPLIED } = require('../constants');
 const APITestInputValidator = require('../helpers/APITestInputValidator');
+const logger = require('../../logger');
 const StatisticalTestService = require('../services/StatisticalTestService');
 
 router.route('/query').get((req, res, next) => {
@@ -40,8 +41,11 @@ router.route('/query').get((req, res, next) => {
 	statsTestServiceInstance
 		.runTest()
 		.then((data) => {
-			//TODO: Return query in response for completeness
-			return res.status(200).json(data);
+			let response = {
+				...data,
+				[API_RESPONSE_DATASET_APPLIED]: req.body.dataset,
+			};
+			return res.status(200).json(response);
 		})
 		.catch((err) => {
 			logger.error('Query error in /stats/test/query.');
