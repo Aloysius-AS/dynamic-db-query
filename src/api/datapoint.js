@@ -21,7 +21,7 @@ function generateErrorObject(err) {
 	return errObj;
 }
 
-router.route('/query').get((req, res, next) => {
+router.route('/').get((req, res, next) => {
 	const {
 		schema_name,
 		base_table_name,

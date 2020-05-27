@@ -21,7 +21,7 @@ function generateErrorObject(err) {
 	return errObj;
 }
 
-router.route('/circleData').get((req, res) => {
+router.route('/').get((req, res) => {
 	try {
 		logger.info('Triggered /circleData');
 
@@ -45,7 +45,7 @@ router.route('/circleData').get((req, res) => {
 	}
 });
 
-router.route('/pdfImage').get((req, res, next) => {
+router.route('/').get((req, res, next) => {
 	const {
 		schema_name,
 		base_table_name,

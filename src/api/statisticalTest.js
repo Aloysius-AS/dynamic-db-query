@@ -6,7 +6,7 @@ const APITestInputValidator = require('../helpers/APITestInputValidator');
 const logger = require('../../logger');
 const StatisticalTestService = require('../services/StatisticalTestService');
 
-router.route('/query').get((req, res, next) => {
+router.route('/').get((req, res, next) => {
 	const {
 		schema_name,
 		test_type,
