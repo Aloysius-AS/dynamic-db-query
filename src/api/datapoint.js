@@ -1,6 +1,6 @@
 const router = require('express').Router();
 
-const { API_RESPONSE_FILTER_APPLIED } = require('../constants');
+const { API_RESPONSE } = require('../constants');
 const ApiDataPointInputValidator = require('../helpers/ApiDataPointInputValidator');
 const { APIErrorHandler } = require('../helpers/apiErrorHandler');
 const logger = require('../../logger');
@@ -57,8 +57,8 @@ router.route('/').get((req, res, next) => {
 		.generateSqlQuery()
 		.then((data) => {
 			let response = {
-				...data,
-				[API_RESPONSE_FILTER_APPLIED]: req.body.filter,
+				[API_RESPONSE.DATA]: data,
+				[API_RESPONSE.FILTER_APPLIED]: req.body.filter,
 			};
 			return res.status(200).json(response);
 		})

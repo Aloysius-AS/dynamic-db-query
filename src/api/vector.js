@@ -2,7 +2,7 @@ const router = require('express').Router();
 const _ = require('lodash');
 
 const ApiVectorInputValidator = require('../helpers/ApiVectorInputValidator');
-const { API_RESPONSE_FILTER_APPLIED } = require('../constants');
+const { API_RESPONSE } = require('../constants');
 const logger = require('../../logger');
 const QueryService = require('../services/QueryService');
 const VectorService = require('../services/VectorService');
@@ -36,8 +36,8 @@ router.route('/').get((req, res, next) => {
 			let result = vectorService.processAggregation(stats);
 
 			let response = {
-				...result,
-				[API_RESPONSE_FILTER_APPLIED]: req.body.filter,
+				[API_RESPONSE.DATA]: result,
+				[API_RESPONSE.FILTER_APPLIED]: req.body.filter,
 			};
 
 			return res.status(200).json(response);
