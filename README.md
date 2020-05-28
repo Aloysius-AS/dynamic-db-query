@@ -12,6 +12,10 @@ Update .env file.
 
 - NODE_ENV: indicates which environment configuration (as specified in knexfile.js) to load for the database
 
+- SSL_KEY_RELATIVE_PATH: path should be relative from startServerListener.js to the .key file
+
+- SSL_CERT_RELATIVE_PATH: path should be relative from startServerListener.js to the .crt file
+
 <br/>
 
 ## Starting the Project
@@ -57,6 +61,7 @@ For Windows environment, the logs can be prettified with the following command.
 1. In .env, change the following variable to the 'test' environment.
 
 > NODE_ENV=test
+
 </p>
 
 <br />
@@ -66,6 +71,7 @@ For Windows environment, the logs can be prettified with the following command.
 
 It is recommended to use a different database name from Development. This is because
 the database would be seeded and deleted during execution of the tests.
+
 </p>
 
 <br />
@@ -80,10 +86,10 @@ the database would be seeded and deleted during execution of the tests.
 4. Run test scripts with the following command.
 
 > npm test
+
 </p>
 
 <br />
-
 
 ## Troubleshooting
 
