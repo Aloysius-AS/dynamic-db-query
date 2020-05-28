@@ -22,9 +22,9 @@ Update .env file.
 
 Run the following command.
 
-For Production,
+For Production, after changing directory to the application folder,
 
-> npm start
+> pm2 start npm --name <App_Name> -- start
 
 &nbsp;
 
@@ -32,13 +32,11 @@ For Development, either command can be executed,
 
 Without nodemon:
 
-> npm run start:dev
+> npm start
 
 With nodemon:
 
 > npm run start:dev-nodemon
-
-Note: .env needs to be configured.
 
 <br/>
 
