@@ -23,10 +23,21 @@ class VectorService {
 		});
 	}
 
+	cleanData() {
+		for (const propertyName in this.structuredData) {
+			let property = this.structuredData[propertyName];
+
+			this.structuredData[propertyName] = property.filter(function (el) {
+				return el !== null && el !== '' && el !== undefined;
+			});
+		}
+	}
+
 	processAggregation(aggregationInputs) {
 		let aggregatedResult = {};
 
 		this.transformRawToStructuredData();
+		this.cleanData();
 
 		aggregationInputs.forEach((aggregationInput) => {
 			let columns = aggregationInput.column;
