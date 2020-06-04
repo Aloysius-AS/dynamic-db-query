@@ -106,3 +106,6 @@ dist
 # Custom application
 api/access.json
 knexfile.js
+src/api/access.json
+src/config/certs/dev.dashstat.com.crt
+src/config/certs/dev.dashstat.com.key
