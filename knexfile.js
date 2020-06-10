@@ -1,5 +1,4 @@
 // Update with your config settings.
-console.log(process.env.API_ACCESS_RELATIVE_PATH);
 module.exports = {
 	development: {
 		client: 'postgresql',
