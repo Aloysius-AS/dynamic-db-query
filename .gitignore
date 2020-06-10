@@ -104,7 +104,6 @@ dist
 .tern-port
 
 # Custom application
-knexfile.js
 src/api/access.json
 src/config/certs/dev.dashstat.com.crt
 src/config/certs/dev.dashstat.com.key
