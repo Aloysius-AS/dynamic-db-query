@@ -6,7 +6,7 @@ const { APIErrorHandler } = require('./apiErrorHandler');
 const loadAccessJsonFile = () => {
 	const fs = require('fs');
 	const path = require('path');
-	let jsonFileRelativePath = '../api/access.json';
+	let jsonFileRelativePath = process.env.API_ACCESS_RELATIVE_PATH;
 	let jsonData = JSON.parse(
 		fs.readFileSync(path.resolve(__dirname, jsonFileRelativePath), 'utf8')
 	);
