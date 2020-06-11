@@ -7,7 +7,7 @@ const logger = require('../../logger');
 const QueryService = require('../services/QueryService');
 const VectorService = require('../services/VectorService');
 
-router.route('/').get((req, res, next) => {
+router.route('/').post((req, res, next) => {
 	const { schema_name, base_table_name, stats, filter } = req.body;
 
 	const apiVectorInputValidator = new ApiVectorInputValidator(
