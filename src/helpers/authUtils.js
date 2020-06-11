@@ -54,12 +54,12 @@ const clientApiKeyValidation = async (req, res, next) => {
 	let clientIpAddress = req.connection.remoteAddress;
 	if (!clientApiKey) {
 		let errObj = new APIErrorHandler(
-			400,
+			401,
 			'Invalid JSON request',
 			'Missing Api Key'
 		);
 
-		return res.status(400).send(errObj);
+		return res.status(401).send(errObj);
 	}
 
 	let accessData = validateApiKey(req.path, clientApiKey);
@@ -68,12 +68,12 @@ const clientApiKeyValidation = async (req, res, next) => {
 			`Unauthorised API request detected. IP Address ${clientIpAddress} tried to access path \"${req.path}\"`
 		);
 		let errObj = new APIErrorHandler(
-			400,
+			401,
 			'Invalid JSON request',
 			'Unauthorised request'
 		);
 
-		return res.status(400).send(errObj);
+		return res.status(401).send(errObj);
 	}
 
 	logAccess(accessData[0].organisation, clientIpAddress, req.path, req.body);
