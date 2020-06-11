@@ -2,25 +2,39 @@
 
 <br/>
 
-## Configuring the Project
+## Configuration
 
-In the root of the project, create knexfile.js. knexfile(sample).js is provided for reference.\
-Update knexfile.js with the information of the database for the required environments (development, staging, production).
+### Development
 
-Then create .env file in root of the project. .env(sample) is provided for reference.
+Create .env file in root of the project. .env(sample) is provided for reference.
+
 Update .env file.
 
+Some items to note:
 - NODE_ENV: indicates which environment configuration (as specified in knexfile.js) to load for the database
 
 - SSL_KEY_RELATIVE_PATH: path should be relative from startServerListener.js to the .key file
 
 - SSL_CERT_RELATIVE_PATH: path should be relative from startServerListener.js to the .crt file
 
+- API_ACCESS_RELATIVE_PATH: path should be relative from authUtils.js
+
+- For database, update the respective environment as indicated in NODE_ENV. The database settings are used in knexfile.js
+
+### Staging
+
+Referencing .env, add in the environment variables for the following categories:
+- Environment
+- Application
+- Database (Staging Environment)
+
 <br/>
 
 ## Starting the Project
 
 Run the following command.
+
+> npm install
 
 For Production, after changing directory to the application folder,
 
