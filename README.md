@@ -6,9 +6,9 @@
 
 The following software are required to setup the backend application.
 
-- Node.js (version 12)
-- PostgreSQL (version 12)
-- OpenSSL
+* Node.js (version 12)
+* PostgreSQL (version 12)
+* OpenSSL
 
 ### Setup
 
@@ -20,10 +20,10 @@ Create the `access.json` file. The content of `access.json` can be copied from `
 
 You would need to configure the following keys.
 
-> | Key           | Description                                                    |
-> | ------------- | -------------------------------------------------------------- |
-> | organisation  | The name of the organisation                                   |
-> | apiKey        | The API key that is allocated to the organisation              |
+> | Key           | Description                                                  |
+> | ------------- | ------------------------------------------------------------ |
+> | organisation  | The name of the organisation                                 |
+> | apiKey        | The API key that is allocated to the organisation            |
 > | accessibleApi | The list of API endpoints that the organisation can connect to |
 
 #### Self Signed SSL Certificates
@@ -33,6 +33,8 @@ SSL certificates are required to host a HTTPS server for the API endpoints. This
 OpenSSL library would be required to complete this section. The library would likely be available by default on Linux distributions. For Windows, you would likely need to download the library separately.
 
 Self signed certificates can be generated with the following series of steps.
+
+
 
 <u>Generating Files Required to become Certificate Authority</u>
 
@@ -47,6 +49,8 @@ Then we generate a root certificate.
 ```bash
 openssl req -x509 -new -nodes -key dashStats_backend.key -sha256 -days 1825 -out dashStats_backend.pem
 ```
+
+
 
 <u>Generating Self Signed Certificates</u>
 
@@ -89,24 +93,26 @@ The environment variables required for this application can be found in `.env(sa
 
 Description of the environment variables is tabulated in the following.
 
-> | Key                             | Description                                                                                                                                                                            |
-> | ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+> | Key                             | Description                                                  |
+> | ------------------------------- | ------------------------------------------------------------ |
 > | NODE_ENV                        | Indicates which database configuration (as specified in `knexfile.js`) to load as the database.<br /> Possible values:<br/> - development<br/> - test<br/> - staging<br/> - production |
-> | NON_SSL_ENABLED                 | `true` if HTTP server is required, else `false`                                                                                                                                        |
-> | NON_SSL_PORT                    | Port for HTTP server                                                                                                                                                                   |
-> | SSL_ENABLED                     | `true` if HTTPS server is required, else `false`                                                                                                                                       |
-> | SSL_PORT                        | Port for HTTPS server                                                                                                                                                                  |
-> | SSL_KEY_RELATIVE_PATH           | The relative path of the .key file generated after SSL certificate is created. The path should be relative from `startServerListener.js` to the .key file.                             |
-> | SSL_CERT_RELATIVE_PATH          | The relative path of the .crt file generated after SSL certificate is created. The path should be relative from `startServerListener.js` to the .crt file.                             |
-> | API_ACCESS_RELATIVE_PATH        | The relative path of `access.json` from `authUtils.js`.                                                                                                                                |
-> | DATABASE*HOST*`ENVIRONMENT`     | IP address of the database host for the corresponding `ENVIRONMENT`                                                                                                                    |
-> | DATABASE*NAME*`ENVIRONMENT`     | Name of the database host for the corresponding `ENVIRONMENT`                                                                                                                          |
-> | DATABASE*USER*`ENVIRONMENT`     | Name of the database user for the corresponding `ENVIRONMENT`                                                                                                                          |
-> | DATABASE*PASSWORD*`ENVIRONMENT` | Password of the database user for the corresponding `ENVIRONMENT`                                                                                                                      |
+> | NON_SSL_ENABLED                 | `true` if HTTP server is required, else `false`              |
+> | NON_SSL_PORT                    | Port for HTTP server                                         |
+> | SSL_ENABLED                     | `true` if HTTPS server is required, else `false`             |
+> | SSL_PORT                        | Port for HTTPS server                                        |
+> | SSL_KEY_RELATIVE_PATH           | The relative path of the .key file generated after SSL certificate is created. The path should be relative from `startServerListener.js` to the .key file. |
+> | SSL_CERT_RELATIVE_PATH          | The relative path of the .crt file generated after SSL certificate is created. The path should be relative from `startServerListener.js` to the .crt file. |
+> | API_ACCESS_RELATIVE_PATH        | The relative path of `access.json` from `authUtils.js`.      |
+> | DATABASE_HOST_`ENVIRONMENT`     | IP address of the database host for the corresponding `ENVIRONMENT` |
+> | DATABASE_NAME_`ENVIRONMENT`     | Name of the database host for the corresponding `ENVIRONMENT` |
+> | DATABASE_USER_`ENVIRONMENT`     | Name of the database user for the corresponding `ENVIRONMENT` |
+> | DATABASE_PASSWORD_`ENVIRONMENT` | Password of the database user for the corresponding `ENVIRONMENT` |
+
+
 
 Some items to note for the environment variables used for database:
 
-There are groups of database configuration specified within the `.env` file, e.g. `Database (Development) Environment`, `Database (Staging Environment)`.
+There are groups of database configuration specified within the `.env` file, e.g. `Database (Development) Environment`, `Database (Staging Environment)`. 
 
 You would only need the environment variables for the corresponding environment.
 
@@ -199,3 +205,4 @@ This is likely due to installing timescaleDb in specific Postgres schema. We can
 ```sql
 CREATE EXTENSION IF NOT EXISTS timescaledb WITH SCHEMA <schema_name>
 ```
+
