@@ -1,6 +1,8 @@
-const logger = require('../../logger');
 const _ = require('lodash');
 const { jStat } = require('jstat');
+
+const { VECTOR_AGGREGATION_TYPES } = require('../constants');
+const logger = require('../../logger');
 
 class VectorService {
 	/**
@@ -46,7 +48,7 @@ class VectorService {
 			aggregates.forEach((aggregate) => {
 				switch (aggregate) {
 					// TODO: Add in other aggregation functions
-					case 'covariance':
+					case VECTOR_AGGREGATION_TYPES.COVARIANCE:
 						let convarianceValue = this.processCovariance(columns);
 						aggregatedResult[columns] = {
 							...aggregatedResult[columns],
@@ -54,7 +56,7 @@ class VectorService {
 						};
 						break;
 
-					case 'mean':
+					case VECTOR_AGGREGATION_TYPES.MEAN:
 						let meanValue = this.processMean(columns);
 						aggregatedResult[columns] = {
 							...aggregatedResult[columns],
@@ -62,7 +64,7 @@ class VectorService {
 						};
 						break;
 
-					case 'population correlation coefficient':
+					case VECTOR_AGGREGATION_TYPES.POP_CORR_COEFFICIENT:
 						let popCorrelationCoefficient = this.processPopulationCorrelationCoefficient(
 							columns
 						);
@@ -72,7 +74,7 @@ class VectorService {
 						};
 						break;
 
-					case 'population standard deviation':
+					case VECTOR_AGGREGATION_TYPES.POP_STD_DEV:
 						let popStdDev = this.processPopulationStandardDeviation(columns);
 						aggregatedResult[columns] = {
 							...aggregatedResult[columns],

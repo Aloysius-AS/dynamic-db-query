@@ -5,6 +5,13 @@ const API_RESPONSE = {
 	DATASET_APPLIED: 'dataset_applied',
 };
 
+const VECTOR_AGGREGATION_TYPES = {
+	COVARIANCE: 'covariance',
+	MEAN: 'mean',
+	POP_CORR_COEFFICIENT: 'population correlation coefficient',
+	POP_STD_DEV: 'population standard deviation',
+};
+
 // Statistical Test API
 const TEST_TYPES = {
 	F_TEST: 'f-test',
@@ -22,4 +29,5 @@ module.exports = {
 	ALT_HYPOTHESIS_VALUES: ALT_HYPOTHESIS_VALUES,
 	API_RESPONSE: API_RESPONSE,
 	TEST_TYPES: TEST_TYPES,
+	VECTOR_AGGREGATION_TYPES: VECTOR_AGGREGATION_TYPES,
 };

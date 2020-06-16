@@ -170,6 +170,14 @@ There are 2 types of logs, `app` and `http-request-log`.
 
 `http-request-log` stores the logs generate by Express middleware.
 
+### Prettifying Logs
+
+For Windows environment, the logs can be prettified with the following command.
+
+```bash
+type <log file> | pino-pretty -t SYS:standard > <output file>
+```
+
 ## Testing
 
 Ensure that the following environment variables are set.

@@ -1,6 +1,8 @@
 const Joi = require('@hapi/joi');
-const logger = require('../../logger');
+
 const { APIErrorHandler } = require('./apiErrorHandler');
+const { VECTOR_AGGREGATION_TYPES } = require('../constants');
+const logger = require('../../logger');
 
 class ApiVectorInputValidator {
 	/**
@@ -55,12 +57,12 @@ class ApiVectorInputValidator {
 
 const validAggregationOptions = [
 	// 'coefficient variation',
-	'covariance',
+	VECTOR_AGGREGATION_TYPES.COVARIANCE,
 	// 'deviation',
 	// 'geomean',
 	// 'kurtosis',
 	// 'max',
-	'mean',
+	VECTOR_AGGREGATION_TYPES.MEAN,
 	// 'mean absolute deviation',
 	// 'mean squared error',
 	// 'median',
@@ -68,8 +70,8 @@ const validAggregationOptions = [
 	// 'min',
 	// 'mode',
 	// 'percentile',
-	'population correlation coefficient',
-	'population standard deviation',
+	VECTOR_AGGREGATION_TYPES.POP_CORR_COEFFICIENT,
+	VECTOR_AGGREGATION_TYPES.POP_STD_DEV,
 	// 'population variance',
 	// 'product',
 	// 'range',
@@ -91,8 +93,8 @@ const apiInputValidationSchema = Joi.object()
 				column: Joi.required().when('aggregate', {
 					is: Joi.array().items(
 						Joi.string().valid(
-							'covariance',
-							'population correlation coefficient'
+							VECTOR_AGGREGATION_TYPES.COVARIANCE,
+							VECTOR_AGGREGATION_TYPES.POP_CORR_COEFFICIENT
 						)
 					),
 					then: Joi.array().items().length(2), // when aggregate contains 'covariance' or 'population correlation coefficient', then columns must have 2 items
