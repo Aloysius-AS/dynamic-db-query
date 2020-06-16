@@ -50,33 +50,35 @@ const logAccess = (organisation, clientIpAddress, apiPath, jsonApiRequest) => {
 };
 
 const clientApiKeyValidation = async (req, res, next) => {
-	let clientApiKey = req.get('api_key');
-	let clientIpAddress = req.connection.remoteAddress;
-	if (!clientApiKey) {
-		let errObj = new APIErrorHandler(
-			401,
-			'Invalid JSON request',
-			'Missing Api Key'
-		);
+	if (!req.path.startsWith('/api-docs/')) {
+		let clientApiKey = req.get('api_key');
+		let clientIpAddress = req.connection.remoteAddress;
+		if (!clientApiKey) {
+			let errObj = new APIErrorHandler(
+				401,
+				'Invalid JSON request',
+				'Missing Api Key'
+			);
 
-		return res.status(401).send(errObj);
+			return res.status(401).send(errObj);
+		}
+
+		let accessData = validateApiKey(req.path, clientApiKey);
+		if (!accessData) {
+			logger.warn(
+				`Unauthorised API request detected. IP Address ${clientIpAddress} tried to access path \"${req.path}\"`
+			);
+			let errObj = new APIErrorHandler(
+				401,
+				'Invalid JSON request',
+				'Unauthorised request'
+			);
+
+			return res.status(401).send(errObj);
+		}
+
+		logAccess(accessData[0].organisation, clientIpAddress, req.path, req.body);
 	}
-
-	let accessData = validateApiKey(req.path, clientApiKey);
-	if (!accessData) {
-		logger.warn(
-			`Unauthorised API request detected. IP Address ${clientIpAddress} tried to access path \"${req.path}\"`
-		);
-		let errObj = new APIErrorHandler(
-			401,
-			'Invalid JSON request',
-			'Unauthorised request'
-		);
-
-		return res.status(401).send(errObj);
-	}
-
-	logAccess(accessData[0].organisation, clientIpAddress, req.path, req.body);
 
 	next();
 };

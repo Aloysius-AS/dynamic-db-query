@@ -2,10 +2,12 @@ const express = require('express');
 const cors = require('cors');
 const expressPino = require('express-pino-logger');
 const helmet = require('helmet');
+const swaggerUi = require('swagger-ui-express');
 const logger = require('./logger');
 const { handleAPIError } = require('./src/helpers/apiErrorHandler');
 const clientApiKeyValidation = require('./src/helpers/authUtils');
 const startServerListener = require('./src/helpers/startServerListener');
+const { swaggerDocs, swaggerUiOptions } = require('./src/helpers/swagger');
 
 const app = express();
 const expressLogger = expressPino({ logger });
@@ -23,6 +25,11 @@ const statsTestApiRouter = require('./src/api/statisticalTest');
 
 startServerListener(app);
 
+app.use(
+	'/api-docs',
+	swaggerUi.serve,
+	swaggerUi.setup(swaggerDocs, swaggerUiOptions)
+);
 app.use('/v1/testAPI', testApiRouter);
 app.use('/v1/datapoint', datapointApiRouter);
 app.use('/v1/stats/vector', vectorApiRouter);

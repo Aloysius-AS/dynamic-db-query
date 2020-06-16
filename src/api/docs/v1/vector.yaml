@@ -1,0 +1,66 @@
+# 1) Define the key name and location
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: api_key
+
+# Apply the API key globally to all operations
+security:
+  - ApiKeyAuth: []
+
+paths:
+  /v1/stats/vector:
+    post:
+      tags:
+        - Statistics
+      summary: This is for performing aggregation functions on vectors
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/vectorAggregation'
+      responses:
+        200:
+          description: Successful retrieval of the aggregation calculation
+        400:
+          description: Invalid request sent
+        401:
+          description: Unauthorized users
+      security:
+        - ApiKeyAuth: []
+
+definitions:
+  vectorAggregation:
+    type: object
+    properties:
+      schema_name:
+        type: string
+      base_table_name:
+        type: string
+      stats:
+        type: array
+        items:
+          type: object
+          properties:
+            column:
+              type: array
+              items:
+                type: string
+            aggregate:
+              type: array
+              items:
+                type: string
+      filter:
+        type: array
+        items:
+          type: object
+          properties:
+            column:
+              type: string
+            operator:
+              type: string
+            value:
+              type: string

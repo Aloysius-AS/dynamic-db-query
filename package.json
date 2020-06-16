@@ -45,6 +45,8 @@
 		"pg": "^8.0.0",
 		"pino": "^6.1.1",
 		"pino-pretty": "^4.0.0",
+		"swagger-jsdoc": "^4.0.0",
+		"swagger-ui-express": "^4.1.4",
 		"ttest": "^2.1.1"
 	}
 }
