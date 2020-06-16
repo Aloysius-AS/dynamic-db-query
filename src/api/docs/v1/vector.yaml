@@ -41,18 +41,16 @@ definitions:
       base_table_name:
         type: string
       stats:
-        type: array
-        items:
-          type: object
-          properties:
-            column:
-              type: array
-              items:
-                type: string
-            aggregate:
-              type: array
-              items:
-                type: string
+        type: object
+        properties:
+          column:
+            type: array
+            items:
+              type: string
+          aggregate:
+            type: array
+            items:
+              type: string
       filter:
         type: array
         items:
