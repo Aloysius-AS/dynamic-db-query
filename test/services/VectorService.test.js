@@ -15,13 +15,10 @@ describe('Generating correct object after aggregation', function () {
 
 		describe('Mean', function () {
 			it('Should return a single JSON object with the mean property and mean value calculated correctly', function () {
-				let stats = [
-					{
-						column: ['height'],
-						aggregate: ['mean'],
-					},
-				];
-
+				let stats = {
+					column: ['height'],
+					aggregate: ['mean'],
+				};
 				let vectorService = new VectorService(data, columns);
 				let result = vectorService.processAggregation(stats);
 

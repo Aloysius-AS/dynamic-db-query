@@ -35,54 +35,52 @@ class VectorService {
 		}
 	}
 
-	processAggregation(aggregationInputs) {
+	processAggregation(aggregationInput) {
 		let aggregatedResult = {};
 
 		this.transformRawToStructuredData();
 		this.cleanData();
 
-		aggregationInputs.forEach((aggregationInput) => {
-			let columns = aggregationInput.column;
-			let aggregates = aggregationInput.aggregate;
+		let columns = aggregationInput.column;
+		let aggregates = aggregationInput.aggregate;
 
-			aggregates.forEach((aggregate) => {
-				switch (aggregate) {
-					// TODO: Add in other aggregation functions
-					case VECTOR_AGGREGATION_TYPES.COVARIANCE:
-						let convarianceValue = this.processCovariance(columns);
-						aggregatedResult[columns] = {
-							...aggregatedResult[columns],
-							covariance: convarianceValue,
-						};
-						break;
+		aggregates.forEach((aggregate) => {
+			switch (aggregate) {
+				// TODO: Add in other aggregation functions
+				case VECTOR_AGGREGATION_TYPES.COVARIANCE:
+					let convarianceValue = this.processCovariance(columns);
+					aggregatedResult[columns] = {
+						...aggregatedResult[columns],
+						covariance: convarianceValue,
+					};
+					break;
 
-					case VECTOR_AGGREGATION_TYPES.MEAN:
-						let meanValue = this.processMean(columns);
-						aggregatedResult[columns] = {
-							...aggregatedResult[columns],
-							mean: meanValue,
-						};
-						break;
+				case VECTOR_AGGREGATION_TYPES.MEAN:
+					let meanValue = this.processMean(columns);
+					aggregatedResult[columns] = {
+						...aggregatedResult[columns],
+						mean: meanValue,
+					};
+					break;
 
-					case VECTOR_AGGREGATION_TYPES.POP_CORR_COEFFICIENT:
-						let popCorrelationCoefficient = this.processPopulationCorrelationCoefficient(
-							columns
-						);
-						aggregatedResult[columns] = {
-							...aggregatedResult[columns],
-							'population correlation coefficient': popCorrelationCoefficient,
-						};
-						break;
+				case VECTOR_AGGREGATION_TYPES.POP_CORR_COEFFICIENT:
+					let popCorrelationCoefficient = this.processPopulationCorrelationCoefficient(
+						columns
+					);
+					aggregatedResult[columns] = {
+						...aggregatedResult[columns],
+						'population correlation coefficient': popCorrelationCoefficient,
+					};
+					break;
 
-					case VECTOR_AGGREGATION_TYPES.POP_STD_DEV:
-						let popStdDev = this.processPopulationStandardDeviation(columns);
-						aggregatedResult[columns] = {
-							...aggregatedResult[columns],
-							'population standard deviation': popStdDev,
-						};
-						break;
-				}
-			});
+				case VECTOR_AGGREGATION_TYPES.POP_STD_DEV:
+					let popStdDev = this.processPopulationStandardDeviation(columns);
+					aggregatedResult[columns] = {
+						...aggregatedResult[columns],
+						'population standard deviation': popStdDev,
+					};
+					break;
+			}
 		});
 
 		return aggregatedResult;
