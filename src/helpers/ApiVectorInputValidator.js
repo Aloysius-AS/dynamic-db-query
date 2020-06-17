@@ -55,52 +55,150 @@ class ApiVectorInputValidator {
 	}
 }
 
-const validAggregationOptions = [
-	// 'coefficient variation',
-	VECTOR_AGGREGATION_TYPES.COVARIANCE,
-	// 'deviation',
-	// 'geomean',
-	// 'kurtosis',
-	// 'max',
+const aggregationsWithSingleInput = [
 	VECTOR_AGGREGATION_TYPES.MEAN,
-	// 'mean absolute deviation',
-	// 'mean squared error',
-	// 'median',
-	// 'median absolute deviation',
-	// 'min',
-	// 'mode',
-	// 'percentile',
-	VECTOR_AGGREGATION_TYPES.POP_CORR_COEFFICIENT,
 	VECTOR_AGGREGATION_TYPES.POP_STD_DEV,
-	// 'population variance',
-	// 'product',
-	// 'range',
-	// 'sample standard deviation',
-	// 'sample variance',
-	// 'skewness',
-	// 'sum',
-	// 'sum squared',
-	// 'sum squared errors',
+];
+const aggregationsWithDoubleInputs = [
+	VECTOR_AGGREGATION_TYPES.COVARIANCE,
+	VECTOR_AGGREGATION_TYPES.POP_CORR_COEFFICIENT,
 ];
 
-// abortEarly in options method is for Joi to return all validation errors instead of the 1st error
+const existsInAggregateRequiringSingleInput = (value) => {
+	const existsInAggregationsWithSingleInput = aggregationsWithSingleInput.some(
+		(aggregation) => {
+			const result = value.includes(aggregation);
+			return result;
+		}
+	);
+
+	return existsInAggregationsWithSingleInput;
+};
+
+const existsInAggregateRequiringDoubleInputs = (value) => {
+	const existsInAggregationsWithDoubleInput = aggregationsWithDoubleInputs.some(
+		(aggregation) => {
+			const result = value.includes(aggregation);
+			return result;
+		}
+	);
+
+	return existsInAggregationsWithDoubleInput;
+};
+
+/**
+ * Aggregate value should not contain aggregation functions that
+ * require both single and double vectors.
+ *
+ * E.g., Mean() requires single vector as input
+ * Covariance() requires double vectors as input
+ *
+ * Aggregate should fail validation when it is ["mean", "covariance"].
+ */
+const validateAggregateNotToRequireMixInputTypes = (value, helpers) => {
+	const pathObj = helpers.state.path;
+
+	const existsInAggregationsWithSingleInput = existsInAggregateRequiringSingleInput(
+		value
+	);
+
+	const existsInAggregationsWithDoubleInput = existsInAggregateRequiringDoubleInputs(
+		value
+	);
+
+	if (
+		existsInAggregationsWithSingleInput &&
+		existsInAggregationsWithDoubleInput
+	) {
+		return helpers.message({
+			custom: `${pathObj[0]}[${pathObj[1]}].${
+				pathObj[2]
+			} cannot be from both [${aggregationsWithSingleInput.join(
+				', '
+			)}] and [${aggregationsWithDoubleInputs}]`,
+		});
+	}
+
+	return undefined;
+};
+
+const validateAggregateToBeFromEitherInputTypes = (value, helpers) => {
+	const pathObj = helpers.state.path;
+
+	const existsInAggregationsWithSingleInput = existsInAggregateRequiringSingleInput(
+		value
+	);
+
+	const existsInAggregationsWithDoubleInput = existsInAggregateRequiringDoubleInputs(
+		value
+	);
+
+	if (
+		!existsInAggregationsWithSingleInput &&
+		!existsInAggregationsWithDoubleInput
+	) {
+		const validInputs = [
+			...aggregationsWithSingleInput,
+			...aggregationsWithDoubleInputs,
+		];
+
+		return helpers.message({
+			custom: `${pathObj[0]}[${pathObj[1]}].${
+				pathObj[2]
+			} must be one of [${validInputs.join(', ')}]`,
+		});
+	}
+
+	return undefined;
+};
+
+const validateAggregate = (value, helpers) => {
+	const aggregateContainsMixInputTypes = validateAggregateNotToRequireMixInputTypes(
+		value,
+		helpers
+	);
+
+	if (aggregateContainsMixInputTypes) {
+		return aggregateContainsMixInputTypes;
+	}
+
+	const aggregateNotInBothInputTypes = validateAggregateToBeFromEitherInputTypes(
+		value,
+		helpers
+	);
+
+	if (aggregateNotInBothInputTypes) {
+		return aggregateNotInBothInputTypes;
+	}
+
+	// Pass custom validation. Return the value unchanged
+	return value;
+};
+
 const apiInputValidationSchema = Joi.object()
 	.keys({
 		schema_name: Joi.string().trim().required(),
 		base_table_name: Joi.string().trim().required(),
 		stats: Joi.array()
 			.items({
-				column: Joi.required().when('aggregate', {
-					is: Joi.array().items(
-						VECTOR_AGGREGATION_TYPES.COVARIANCE,
-						VECTOR_AGGREGATION_TYPES.POP_CORR_COEFFICIENT
-					),
-					then: Joi.array().items().length(2), // when aggregate contains 'covariance' or 'population correlation coefficient', then columns must have 2 items
-					otherwise: Joi.array().items().length(1), // when aggregate do not contain 'covariance' or 'population correlation coefficient', then columns must have 1 item
-				}),
+				column: Joi.required()
+					.when('aggregate', {
+						is: Joi.array().items(
+							VECTOR_AGGREGATION_TYPES.COVARIANCE,
+							VECTOR_AGGREGATION_TYPES.POP_CORR_COEFFICIENT
+						),
+						then: Joi.array().items().length(2), // when aggregate contains 'covariance' or 'population correlation coefficient', then columns must have 2 items
+					})
+					.when('aggregate', {
+						is: Joi.array().items(
+							VECTOR_AGGREGATION_TYPES.MEAN,
+							VECTOR_AGGREGATION_TYPES.POP_STD_DEV
+						),
+						then: Joi.array().items().length(1),
+					}),
 				aggregate: Joi.array()
-					.items(Joi.string().valid(...validAggregationOptions))
-					.required(),
+					.required()
+					.custom(validateAggregate, 'validate aggregate key'),
 			})
 			.required(),
 		filter: Joi.array().items({
@@ -111,6 +209,10 @@ const apiInputValidationSchema = Joi.object()
 			value: Joi.alternatives(Joi.number(), Joi.string().trim()).required(),
 		}),
 	})
-	.options({ abortEarly: false });
+
+	.options({
+		// abortEarly has to be true because validation of column property is dependant on aggregate property
+		abortEarly: true,
+	});
 
 module.exports = ApiVectorInputValidator;
