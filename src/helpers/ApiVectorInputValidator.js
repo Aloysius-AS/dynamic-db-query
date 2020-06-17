@@ -88,8 +88,8 @@ const apiInputValidationSchema = Joi.object()
 	.keys({
 		schema_name: Joi.string().trim().required(),
 		base_table_name: Joi.string().trim().required(),
-		stats: Joi.object()
-			.keys({
+		stats: Joi.array()
+			.items({
 				column: Joi.required().when('aggregate', {
 					is: Joi.array().items(
 						Joi.string().valid(

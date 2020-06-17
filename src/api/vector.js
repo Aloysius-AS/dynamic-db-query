@@ -19,7 +19,7 @@ router.route('/').post((req, res, next) => {
 	apiVectorInputValidator.validate();
 
 	// get unique values from the array of stats.column
-	let columns = _.uniq(stats.column);
+	let columns = _.spread(_.union)(_.map(stats, 'column'));
 
 	const queryServiceInstance = new QueryService(
 		schema_name,
