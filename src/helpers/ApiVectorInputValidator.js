@@ -92,10 +92,8 @@ const apiInputValidationSchema = Joi.object()
 			.items({
 				column: Joi.required().when('aggregate', {
 					is: Joi.array().items(
-						Joi.string().valid(
-							VECTOR_AGGREGATION_TYPES.COVARIANCE,
-							VECTOR_AGGREGATION_TYPES.POP_CORR_COEFFICIENT
-						)
+						VECTOR_AGGREGATION_TYPES.COVARIANCE,
+						VECTOR_AGGREGATION_TYPES.POP_CORR_COEFFICIENT
 					),
 					then: Joi.array().items().length(2), // when aggregate contains 'covariance' or 'population correlation coefficient', then columns must have 2 items
 					otherwise: Joi.array().items().length(1), // when aggregate do not contain 'covariance' or 'population correlation coefficient', then columns must have 1 item
