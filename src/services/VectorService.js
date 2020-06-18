@@ -16,6 +16,7 @@ class VectorService {
 
 		// Holds the data in a key value pair structure. Key holds the name of column.
 		// Value holds the data for the corresponding column.
+		// Data stored here have not been cleanse yet.
 		this.structuredData = {};
 	}
 
@@ -25,31 +26,85 @@ class VectorService {
 		});
 	}
 
-	cleanData() {
+	/**
+	 * Loop through each data column and clean it individually.
+	 */
+	cleanDataByIndividualColumn() {
+		let cleanData = {};
+
 		for (const propertyName in this.structuredData) {
 			let property = this.structuredData[propertyName];
 
-			this.structuredData[propertyName] = property.filter(function (el) {
+			cleanData[propertyName] = property.filter(function (el) {
 				return el !== null && el !== '' && el !== undefined;
 			});
 		}
+
+		return cleanData;
+	}
+
+	/**
+	 * Method to clean data by columns that are paired.
+	 * If at least one of the row in the column is empty or null, this row and the corresponding row
+	 * in the paired column would be deleted.
+	 */
+	cleanDataByPairedColumns(firstColumnName, secondColumnName) {
+		let dataFirstColumn = Array.from(this.structuredData[firstColumnName]);
+		let dataSecondColumn = Array.from(this.structuredData[secondColumnName]);
+
+		if (dataFirstColumn.length != dataSecondColumn.length) {
+			throw `Length of data for column ${firstColumnName} and ${secondColumnName} are not the same.`;
+		}
+
+		for (let i = 0; i < dataFirstColumn.length; i++) {
+			let isFirstColumnDirty =
+				dataFirstColumn[i] == null ||
+				dataFirstColumn[i] == '' ||
+				dataFirstColumn[i] == undefined;
+
+			let isSecondColumnDirty =
+				dataSecondColumn[i] == null ||
+				dataSecondColumn[i] == '' ||
+				dataSecondColumn[i] == undefined;
+
+			if (isFirstColumnDirty || isSecondColumnDirty) {
+				dataFirstColumn.splice(i, 1);
+				dataSecondColumn.splice(i, 1);
+			}
+		}
+
+		return {
+			[firstColumnName]: dataFirstColumn,
+			[secondColumnName]: dataSecondColumn,
+		};
 	}
 
 	processAggregation(aggregationInputs) {
 		let aggregatedResult = {};
 
 		this.transformRawToStructuredData();
-		this.cleanData();
+		let cleanDataIndividualColumn = this.cleanDataByIndividualColumn();
 
 		aggregationInputs.forEach((aggregationInput) => {
 			let columns = aggregationInput.column;
 			let aggregates = aggregationInput.aggregate;
 
+			let cleanDataPairedColumns = {};
+			if (columns.length === 2) {
+				cleanDataPairedColumns = this.cleanDataByPairedColumns(
+					columns[0],
+					columns[1]
+				);
+			}
+
 			aggregates.forEach((aggregate) => {
 				switch (aggregate) {
 					// TODO: Add in other aggregation functions
 					case VECTOR_AGGREGATION_TYPES.COVARIANCE:
-						let convarianceValue = this.processCovariance(columns);
+						let convarianceValue = this.processCovariance(
+							columns,
+							cleanDataPairedColumns
+						);
 						aggregatedResult[columns] = {
 							...aggregatedResult[columns],
 							covariance: convarianceValue,
@@ -57,7 +112,10 @@ class VectorService {
 						break;
 
 					case VECTOR_AGGREGATION_TYPES.MEAN:
-						let meanValue = this.processMean(columns);
+						let meanValue = this.processMean(
+							columns,
+							cleanDataIndividualColumn
+						);
 						aggregatedResult[columns] = {
 							...aggregatedResult[columns],
 							mean: meanValue,
@@ -66,7 +124,8 @@ class VectorService {
 
 					case VECTOR_AGGREGATION_TYPES.POP_CORR_COEFFICIENT:
 						let popCorrelationCoefficient = this.processPopulationCorrelationCoefficient(
-							columns
+							columns,
+							cleanDataPairedColumns
 						);
 						aggregatedResult[columns] = {
 							...aggregatedResult[columns],
@@ -75,7 +134,10 @@ class VectorService {
 						break;
 
 					case VECTOR_AGGREGATION_TYPES.POP_STD_DEV:
-						let popStdDev = this.processPopulationStandardDeviation(columns);
+						let popStdDev = this.processPopulationStandardDeviation(
+							columns,
+							cleanDataIndividualColumn
+						);
 						aggregatedResult[columns] = {
 							...aggregatedResult[columns],
 							'population standard deviation': popStdDev,
@@ -88,11 +150,11 @@ class VectorService {
 		return aggregatedResult;
 	}
 
-	processCovariance(columns) {
+	processCovariance(columns, data) {
 		logger.debug(`performing covariance on ${columns[0]} and ${columns[1]}`);
 
-		let firstSetOfDataToBeAggregated = this.structuredData[columns[0]];
-		let secondSetOfDataToBeAggregated = this.structuredData[columns[1]];
+		let firstSetOfDataToBeAggregated = data[columns[0]];
+		let secondSetOfDataToBeAggregated = data[columns[1]];
 
 		let convarianceValue = jStat.covariance(
 			firstSetOfDataToBeAggregated,
@@ -102,22 +164,22 @@ class VectorService {
 		return convarianceValue;
 	}
 
-	processMean(columns) {
+	processMean(columns, data) {
 		logger.debug(`performing mean on ${columns[0]}`);
 
-		let dataToBeAggregated = this.structuredData[columns[0]];
+		let dataToBeAggregated = data[columns[0]];
 		let meanValue = jStat.mean(dataToBeAggregated);
 
 		return meanValue;
 	}
 
-	processPopulationCorrelationCoefficient(columns) {
+	processPopulationCorrelationCoefficient(columns, data) {
 		logger.debug(
 			`performing correlation coefficient on ${columns[0]} and ${columns[1]}`
 		);
 
-		let firstSetOfDataToBeAggregated = this.structuredData[columns[0]];
-		let secondSetOfDataToBeAggregated = this.structuredData[columns[1]];
+		let firstSetOfDataToBeAggregated = data[columns[0]];
+		let secondSetOfDataToBeAggregated = data[columns[1]];
 		let popCorrelationCoefficient = jStat.corrcoeff(
 			firstSetOfDataToBeAggregated,
 			secondSetOfDataToBeAggregated
@@ -126,10 +188,10 @@ class VectorService {
 		return popCorrelationCoefficient;
 	}
 
-	processPopulationStandardDeviation(columns) {
+	processPopulationStandardDeviation(columns, data) {
 		logger.debug(`performing population standard deviation on ${columns[0]}`);
 
-		let dataToBeAggregated = this.structuredData[columns[0]];
+		let dataToBeAggregated = data[columns[0]];
 		let popStdDev = jStat.stdev(dataToBeAggregated);
 
 		return popStdDev;
