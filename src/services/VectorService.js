@@ -141,6 +141,17 @@ class VectorService {
 						};
 						break;
 
+					case VECTOR_AGGREGATION_TYPES.MEDIAN:
+						let medianValue = this.processMedian(
+							columns,
+							cleanDataIndividualColumn
+						);
+						aggregatedResult[columns] = {
+							...aggregatedResult[columns],
+							median: medianValue,
+						};
+						break;
+
 					case VECTOR_AGGREGATION_TYPES.POP_CORR_COEFFICIENT:
 						let popCorrelationCoefficient = this.processPopulationCorrelationCoefficient(
 							columns,
@@ -208,6 +219,15 @@ class VectorService {
 		let meanValue = jStat.mean(dataToBeAggregated);
 
 		return meanValue;
+	}
+
+	processMedian(columns, data) {
+		logger.debug(`performing median on ${columns[0]}`);
+
+		let dataToBeAggregated = data[columns[0]];
+		let result = jStat.median(dataToBeAggregated);
+
+		return result;
 	}
 
 	processPopulationCorrelationCoefficient(columns, data) {

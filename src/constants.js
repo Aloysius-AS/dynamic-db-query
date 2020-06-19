@@ -10,6 +10,7 @@ const VECTOR_AGGREGATION_TYPES = {
 	COVARIANCE: 'covariance',
 	MAX: 'max',
 	MEAN: 'mean',
+	MEDIAN: 'median',
 	POP_CORR_COEFFICIENT: 'population correlation coefficient',
 	POP_STD_DEV: 'population standard deviation',
 };
