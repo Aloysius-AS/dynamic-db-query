@@ -58,6 +58,7 @@ class ApiVectorInputValidator {
 const aggregationsWithSingleInput = [
 	VECTOR_AGGREGATION_TYPES.MEAN,
 	VECTOR_AGGREGATION_TYPES.POP_STD_DEV,
+	VECTOR_AGGREGATION_TYPES.COEFFICIENT_VARIATION,
 ];
 const aggregationsWithDoubleInputs = [
 	VECTOR_AGGREGATION_TYPES.COVARIANCE,

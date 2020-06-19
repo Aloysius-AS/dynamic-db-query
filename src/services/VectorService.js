@@ -100,6 +100,17 @@ class VectorService {
 			aggregates.forEach((aggregate) => {
 				switch (aggregate) {
 					// TODO: Add in other aggregation functions
+					case VECTOR_AGGREGATION_TYPES.COEFFICIENT_VARIATION:
+						let coefficientOfVariationValue = this.processCoefficientOfVariation(
+							columns,
+							cleanDataIndividualColumn
+						);
+						aggregatedResult[columns] = {
+							...aggregatedResult[columns],
+							'coefficient of variation': coefficientOfVariationValue,
+						};
+						break;
+
 					case VECTOR_AGGREGATION_TYPES.COVARIANCE:
 						let convarianceValue = this.processCovariance(
 							columns,
@@ -148,6 +159,15 @@ class VectorService {
 		});
 
 		return aggregatedResult;
+	}
+
+	processCoefficientOfVariation(columns, data) {
+		logger.debug(`performing coefficient of variation on ${columns[0]}`);
+
+		let dataToBeAggregated = data[columns[0]];
+		let result = jStat.coeffvar(dataToBeAggregated);
+
+		return result;
 	}
 
 	processCovariance(columns, data) {
