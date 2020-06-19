@@ -8,6 +8,7 @@ const API_RESPONSE = {
 const VECTOR_AGGREGATION_TYPES = {
 	COEFFICIENT_VARIATION: 'coefficient of variation',
 	COVARIANCE: 'covariance',
+	MAX: 'max',
 	MEAN: 'mean',
 	POP_CORR_COEFFICIENT: 'population correlation coefficient',
 	POP_STD_DEV: 'population standard deviation',

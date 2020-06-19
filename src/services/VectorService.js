@@ -122,6 +122,14 @@ class VectorService {
 						};
 						break;
 
+					case VECTOR_AGGREGATION_TYPES.MAX:
+						let maxValue = this.processMax(columns, cleanDataIndividualColumn);
+						aggregatedResult[columns] = {
+							...aggregatedResult[columns],
+							max: maxValue,
+						};
+						break;
+
 					case VECTOR_AGGREGATION_TYPES.MEAN:
 						let meanValue = this.processMean(
 							columns,
@@ -182,6 +190,15 @@ class VectorService {
 		);
 
 		return convarianceValue;
+	}
+
+	processMax(columns, data) {
+		logger.debug(`performing max on ${columns[0]}`);
+
+		let dataToBeAggregated = data[columns[0]];
+		let result = jStat.max(dataToBeAggregated);
+
+		return result;
 	}
 
 	processMean(columns, data) {
