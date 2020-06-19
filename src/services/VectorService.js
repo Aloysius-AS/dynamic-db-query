@@ -184,6 +184,17 @@ class VectorService {
 							'sample variance': sampleVarianceValue,
 						};
 						break;
+
+					case VECTOR_AGGREGATION_TYPES.SUM_OF_SQUARED_ERRORS:
+						let sumOfSquaredErrorsValue = this.processSumOfSquaredErrors(
+							columns,
+							cleanDataIndividualColumn
+						);
+						aggregatedResult[columns] = {
+							...aggregatedResult[columns],
+							'sum of squared errors': sumOfSquaredErrorsValue,
+						};
+						break;
 				}
 			});
 		});
@@ -272,6 +283,15 @@ class VectorService {
 		let sampleVarianceValue = jStat.variance(dataToBeAggregated, true);
 
 		return sampleVarianceValue;
+	}
+
+	processSumOfSquaredErrors(columns, data) {
+		logger.debug(`performing sum of squared errors on ${columns[0]}`);
+
+		let dataToBeAggregated = data[columns[0]];
+		let result = jStat.sumsqerr(dataToBeAggregated);
+
+		return result;
 	}
 }
 module.exports = VectorService;
