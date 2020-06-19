@@ -173,6 +173,17 @@ class VectorService {
 							'population standard deviation': popStdDev,
 						};
 						break;
+
+					case VECTOR_AGGREGATION_TYPES.SAMPLE_VARIANCE:
+						let sampleVarianceValue = this.processSampleVariance(
+							columns,
+							cleanDataIndividualColumn
+						);
+						aggregatedResult[columns] = {
+							...aggregatedResult[columns],
+							'sample variance': sampleVarianceValue,
+						};
+						break;
 				}
 			});
 		});
@@ -252,6 +263,15 @@ class VectorService {
 		let popStdDev = jStat.stdev(dataToBeAggregated);
 
 		return popStdDev;
+	}
+
+	processSampleVariance(columns, data) {
+		logger.debug(`performing sample variance on ${columns[0]}`);
+
+		let dataToBeAggregated = data[columns[0]];
+		let sampleVarianceValue = jStat.variance(dataToBeAggregated, true);
+
+		return sampleVarianceValue;
 	}
 }
 module.exports = VectorService;

@@ -13,6 +13,7 @@ const VECTOR_AGGREGATION_TYPES = {
 	MEDIAN: 'median',
 	POP_CORR_COEFFICIENT: 'population correlation coefficient',
 	POP_STD_DEV: 'population standard deviation',
+	SAMPLE_VARIANCE: 'sample variance',
 };
 
 // Statistical Test API
