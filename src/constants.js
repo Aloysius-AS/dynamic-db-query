@@ -12,6 +12,7 @@ const VECTOR_AGGREGATION_TYPES = {
 	GEOMEAN: 'geomean',
 	MAX: 'max',
 	MEAN: 'mean',
+	MEAN_ABSOLUTE_DEVIATION: 'mean absolute deviation',
 	MEDIAN: 'median',
 	MEDIAN_ABSOLUTE_DEVIATION: 'median absolute deviation',
 	POP_CORR_COEFFICIENT: 'population correlation coefficient',

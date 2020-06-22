@@ -163,6 +163,17 @@ class VectorService {
 						};
 						break;
 
+					case VECTOR_AGGREGATION_TYPES.MEAN_ABSOLUTE_DEVIATION:
+						let meanDevValue = this.processMeanAbsoluteDeviation(
+							columns,
+							cleanDataIndividualColumn
+						);
+						aggregatedResult[columns] = {
+							...aggregatedResult[columns],
+							'mean absolute deviation': meanDevValue,
+						};
+						break;
+
 					case VECTOR_AGGREGATION_TYPES.MEDIAN:
 						let medianValue = this.processMedian(
 							columns,
@@ -314,6 +325,15 @@ class VectorService {
 		let meanValue = jStat.mean(dataToBeAggregated);
 
 		return meanValue;
+	}
+
+	processMeanAbsoluteDeviation(columns, data) {
+		logger.debug(`performing mean absolute deviation on ${columns[0]}`);
+
+		let dataToBeAggregated = data[columns[0]];
+		let result = jStat.meandev(dataToBeAggregated);
+
+		return result;
 	}
 
 	processMedian(columns, data) {
