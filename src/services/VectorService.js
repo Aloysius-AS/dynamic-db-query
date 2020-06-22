@@ -196,6 +196,14 @@ class VectorService {
 						};
 						break;
 
+					case VECTOR_AGGREGATION_TYPES.MIN:
+						let minValue = this.processMin(columns, cleanDataIndividualColumn);
+						aggregatedResult[columns] = {
+							...aggregatedResult[columns],
+							min: minValue,
+						};
+						break;
+
 					case VECTOR_AGGREGATION_TYPES.POP_CORR_COEFFICIENT:
 						let popCorrelationCoefficient = this.processPopulationCorrelationCoefficient(
 							columns,
@@ -350,6 +358,15 @@ class VectorService {
 
 		let dataToBeAggregated = data[columns[0]];
 		let result = jStat.meddev(dataToBeAggregated);
+
+		return result;
+	}
+
+	processMin(columns, data) {
+		logger.debug(`performing min on ${columns[0]}`);
+
+		let dataToBeAggregated = data[columns[0]];
+		let result = jStat.min(dataToBeAggregated);
 
 		return result;
 	}

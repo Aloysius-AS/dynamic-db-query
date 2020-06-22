@@ -15,6 +15,7 @@ const VECTOR_AGGREGATION_TYPES = {
 	MEAN_ABSOLUTE_DEVIATION: 'mean absolute deviation',
 	MEDIAN: 'median',
 	MEDIAN_ABSOLUTE_DEVIATION: 'median absolute deviation',
+	MIN: 'min',
 	POP_CORR_COEFFICIENT: 'population correlation coefficient',
 	POP_STD_DEV: 'population standard deviation',
 	POPULATION_VARIANCE: 'population variance',
