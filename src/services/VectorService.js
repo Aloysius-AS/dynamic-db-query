@@ -122,6 +122,17 @@ class VectorService {
 						};
 						break;
 
+					case VECTOR_AGGREGATION_TYPES.DEVIATION:
+						let deviationValue = this.processDeviation(
+							columns,
+							cleanDataIndividualColumn
+						);
+						aggregatedResult[columns] = {
+							...aggregatedResult[columns],
+							deviation: deviationValue,
+						};
+						break;
+
 					case VECTOR_AGGREGATION_TYPES.MAX:
 						let maxValue = this.processMax(columns, cleanDataIndividualColumn);
 						aggregatedResult[columns] = {
@@ -223,6 +234,15 @@ class VectorService {
 		);
 
 		return convarianceValue;
+	}
+
+	processDeviation(columns, data) {
+		logger.debug(`performing deviation on ${columns[0]}`);
+
+		let dataToBeAggregated = data[columns[0]];
+		let result = jStat.deviation(dataToBeAggregated);
+
+		return result;
 	}
 
 	processMax(columns, data) {
