@@ -237,6 +237,17 @@ class VectorService {
 						};
 						break;
 
+					case VECTOR_AGGREGATION_TYPES.RANGE:
+						let rangeValue = this.processRange(
+							columns,
+							cleanDataIndividualColumn
+						);
+						aggregatedResult[columns] = {
+							...aggregatedResult[columns],
+							range: rangeValue,
+						};
+						break;
+
 					case VECTOR_AGGREGATION_TYPES.SAMPLE_VARIANCE:
 						let sampleVarianceValue = this.processSampleVariance(
 							columns,
@@ -400,6 +411,15 @@ class VectorService {
 
 		let dataToBeAggregated = data[columns[0]];
 		let result = jStat.variance(dataToBeAggregated);
+
+		return result;
+	}
+
+	processRange(columns, data) {
+		logger.debug(`performing range on ${columns[0]}`);
+
+		let dataToBeAggregated = data[columns[0]];
+		let result = jStat.range(dataToBeAggregated);
 
 		return result;
 	}

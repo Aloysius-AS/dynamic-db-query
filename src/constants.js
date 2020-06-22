@@ -19,6 +19,7 @@ const VECTOR_AGGREGATION_TYPES = {
 	POP_CORR_COEFFICIENT: 'population correlation coefficient',
 	POP_STD_DEV: 'population standard deviation',
 	POPULATION_VARIANCE: 'population variance',
+	RANGE: 'range',
 	SAMPLE_VARIANCE: 'sample variance',
 	SKEWNESS: 'skewness',
 	SUM_OF_SQUARED_ERRORS: 'sum of squared errors',
