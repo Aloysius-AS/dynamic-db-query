@@ -163,6 +163,17 @@ class VectorService {
 						};
 						break;
 
+					case VECTOR_AGGREGATION_TYPES.MEDIAN_ABSOLUTE_DEVIATION:
+						let medianAbsoluteDeviationValue = this.processMedianAbsoluteDeviation(
+							columns,
+							cleanDataIndividualColumn
+						);
+						aggregatedResult[columns] = {
+							...aggregatedResult[columns],
+							'median absolute deviation': medianAbsoluteDeviationValue,
+						};
+						break;
+
 					case VECTOR_AGGREGATION_TYPES.POP_CORR_COEFFICIENT:
 						let popCorrelationCoefficient = this.processPopulationCorrelationCoefficient(
 							columns,
@@ -268,6 +279,15 @@ class VectorService {
 
 		let dataToBeAggregated = data[columns[0]];
 		let result = jStat.median(dataToBeAggregated);
+
+		return result;
+	}
+
+	processMedianAbsoluteDeviation(columns, data) {
+		logger.debug(`performing median absolute deviation on ${columns[0]}`);
+
+		let dataToBeAggregated = data[columns[0]];
+		let result = jStat.meddev(dataToBeAggregated);
 
 		return result;
 	}
