@@ -133,6 +133,17 @@ class VectorService {
 						};
 						break;
 
+					case VECTOR_AGGREGATION_TYPES.GEOMEAN:
+						let geomeanValue = this.processGeomean(
+							columns,
+							cleanDataIndividualColumn
+						);
+						aggregatedResult[columns] = {
+							...aggregatedResult[columns],
+							geomean: geomeanValue,
+						};
+						break;
+
 					case VECTOR_AGGREGATION_TYPES.MAX:
 						let maxValue = this.processMax(columns, cleanDataIndividualColumn);
 						aggregatedResult[columns] = {
@@ -274,6 +285,15 @@ class VectorService {
 
 		let dataToBeAggregated = data[columns[0]];
 		let result = jStat.deviation(dataToBeAggregated);
+
+		return result;
+	}
+
+	processGeomean(columns, data) {
+		logger.debug(`performing geomean on ${columns[0]}`);
+
+		let dataToBeAggregated = data[columns[0]];
+		let result = jStat.geomean(dataToBeAggregated);
 
 		return result;
 	}

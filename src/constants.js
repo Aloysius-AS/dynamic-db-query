@@ -9,6 +9,7 @@ const VECTOR_AGGREGATION_TYPES = {
 	COEFFICIENT_VARIATION: 'coefficient of variation',
 	COVARIANCE: 'covariance',
 	DEVIATION: 'deviation',
+	GEOMEAN: 'geomean',
 	MAX: 'max',
 	MEAN: 'mean',
 	MEDIAN: 'median',
