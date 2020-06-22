@@ -218,6 +218,17 @@ class VectorService {
 						};
 						break;
 
+					case VECTOR_AGGREGATION_TYPES.SKEWNESS:
+						let skewnessValue = this.processSkewness(
+							columns,
+							cleanDataIndividualColumn
+						);
+						aggregatedResult[columns] = {
+							...aggregatedResult[columns],
+							skewness: skewnessValue,
+						};
+						break;
+
 					case VECTOR_AGGREGATION_TYPES.SUM_OF_SQUARED_ERRORS:
 						let sumOfSquaredErrorsValue = this.processSumOfSquaredErrors(
 							columns,
@@ -343,6 +354,15 @@ class VectorService {
 		let sampleVarianceValue = jStat.variance(dataToBeAggregated, true);
 
 		return sampleVarianceValue;
+	}
+
+	processSkewness(columns, data) {
+		logger.debug(`performing skewness on ${columns[0]}`);
+
+		let dataToBeAggregated = data[columns[0]];
+		let result = jStat.skewness(dataToBeAggregated);
+
+		return result;
 	}
 
 	processSumOfSquaredErrors(columns, data) {
