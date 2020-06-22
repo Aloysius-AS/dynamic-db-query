@@ -196,6 +196,17 @@ class VectorService {
 						};
 						break;
 
+					case VECTOR_AGGREGATION_TYPES.POPULATION_VARIANCE:
+						let populationVarianceValue = this.processPopulationVariance(
+							columns,
+							cleanDataIndividualColumn
+						);
+						aggregatedResult[columns] = {
+							...aggregatedResult[columns],
+							'population variance': populationVarianceValue,
+						};
+						break;
+
 					case VECTOR_AGGREGATION_TYPES.SAMPLE_VARIANCE:
 						let sampleVarianceValue = this.processSampleVariance(
 							columns,
@@ -314,6 +325,15 @@ class VectorService {
 		let popStdDev = jStat.stdev(dataToBeAggregated);
 
 		return popStdDev;
+	}
+
+	processPopulationVariance(columns, data) {
+		logger.debug(`performing population variance on ${columns[0]}`);
+
+		let dataToBeAggregated = data[columns[0]];
+		let result = jStat.variance(dataToBeAggregated);
+
+		return result;
 	}
 
 	processSampleVariance(columns, data) {
