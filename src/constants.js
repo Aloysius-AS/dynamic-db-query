@@ -22,6 +22,7 @@ const VECTOR_AGGREGATION_TYPES = {
 	RANGE: 'range',
 	SAMPLE_VARIANCE: 'sample variance',
 	SKEWNESS: 'skewness',
+	SUM: 'sum',
 	SUM_OF_SQUARED_ERRORS: 'sum of squared errors',
 };
 

@@ -270,6 +270,14 @@ class VectorService {
 						};
 						break;
 
+					case VECTOR_AGGREGATION_TYPES.SUM:
+						let sumValue = this.processSum(columns, cleanDataIndividualColumn);
+						aggregatedResult[columns] = {
+							...aggregatedResult[columns],
+							sum: sumValue,
+						};
+						break;
+
 					case VECTOR_AGGREGATION_TYPES.SUM_OF_SQUARED_ERRORS:
 						let sumOfSquaredErrorsValue = this.processSumOfSquaredErrors(
 							columns,
@@ -438,6 +446,15 @@ class VectorService {
 
 		let dataToBeAggregated = data[columns[0]];
 		let result = jStat.skewness(dataToBeAggregated);
+
+		return result;
+	}
+
+	processSum(columns, data) {
+		logger.debug(`performing sum on ${columns[0]}`);
+
+		let dataToBeAggregated = data[columns[0]];
+		let result = jStat.sum(dataToBeAggregated);
 
 		return result;
 	}
