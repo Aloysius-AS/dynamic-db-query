@@ -270,6 +270,17 @@ class VectorService {
 						};
 						break;
 
+					case VECTOR_AGGREGATION_TYPES.SAMPLE_STANDARD_DEVIATION:
+						let sampleStdevValue = this.processSampleStandardDeviation(
+							columns,
+							cleanDataIndividualColumn
+						);
+						aggregatedResult[columns] = {
+							...aggregatedResult[columns],
+							'sample standard deviation': sampleStdevValue,
+						};
+						break;
+
 					case VECTOR_AGGREGATION_TYPES.SAMPLE_VARIANCE:
 						let sampleVarianceValue = this.processSampleVariance(
 							columns,
@@ -468,6 +479,15 @@ class VectorService {
 
 		let dataToBeAggregated = data[columns[0]];
 		let result = jStat.range(dataToBeAggregated);
+
+		return result;
+	}
+
+	processSampleStandardDeviation(columns, data) {
+		logger.debug(`performing sample standard deviation on ${columns[0]}`);
+
+		let dataToBeAggregated = data[columns[0]];
+		let result = jStat.stdev(dataToBeAggregated, true);
 
 		return result;
 	}
