@@ -51,6 +51,10 @@ class VectorService {
 	cleanDataByPairedColumns(firstColumnName, secondColumnName) {
 		let dataFirstColumn = Array.from(this.structuredData[firstColumnName]);
 		let dataSecondColumn = Array.from(this.structuredData[secondColumnName]);
+		let result = {
+			[firstColumnName]: [],
+			[secondColumnName]: [],
+		};
 
 		if (dataFirstColumn.length != dataSecondColumn.length) {
 			throw `Length of data for column ${firstColumnName} and ${secondColumnName} are not the same.`;
@@ -67,16 +71,17 @@ class VectorService {
 				dataSecondColumn[i] == '' ||
 				dataSecondColumn[i] == undefined;
 
-			if (isFirstColumnDirty || isSecondColumnDirty) {
-				dataFirstColumn.splice(i, 1);
-				dataSecondColumn.splice(i, 1);
+			if (!isFirstColumnDirty && !isSecondColumnDirty) {
+				result[firstColumnName] = result[firstColumnName].concat(
+					dataFirstColumn[i]
+				);
+				result[secondColumnName] = result[secondColumnName].concat(
+					dataSecondColumn[i]
+				);
 			}
 		}
 
-		return {
-			[firstColumnName]: dataFirstColumn,
-			[secondColumnName]: dataSecondColumn,
-		};
+		return result;
 	}
 
 	processAggregation(aggregationInputs) {
