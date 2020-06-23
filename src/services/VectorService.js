@@ -174,6 +174,17 @@ class VectorService {
 						};
 						break;
 
+					case VECTOR_AGGREGATION_TYPES.MEAN_SQUARED_ERROR:
+						let meanSqErrValue = this.processMeanSquaredError(
+							columns,
+							cleanDataIndividualColumn
+						);
+						aggregatedResult[columns] = {
+							...aggregatedResult[columns],
+							'mean squared error': meanSqErrValue,
+						};
+						break;
+
 					case VECTOR_AGGREGATION_TYPES.MEDIAN:
 						let medianValue = this.processMedian(
 							columns,
@@ -359,6 +370,15 @@ class VectorService {
 
 		let dataToBeAggregated = data[columns[0]];
 		let result = jStat.meandev(dataToBeAggregated);
+
+		return result;
+	}
+
+	processMeanSquaredError(columns, data) {
+		logger.debug(`performing mean squared error on ${columns[0]}`);
+
+		let dataToBeAggregated = data[columns[0]];
+		let result = jStat.meansqerr(dataToBeAggregated);
 
 		return result;
 	}

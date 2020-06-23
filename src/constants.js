@@ -13,6 +13,7 @@ const VECTOR_AGGREGATION_TYPES = {
 	MAX: 'max',
 	MEAN: 'mean',
 	MEAN_ABSOLUTE_DEVIATION: 'mean absolute deviation',
+	MEAN_SQUARED_ERROR: 'mean squared error',
 	MEDIAN: 'median',
 	MEDIAN_ABSOLUTE_DEVIATION: 'median absolute deviation',
 	MIN: 'min',
