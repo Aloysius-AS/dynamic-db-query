@@ -160,6 +160,8 @@ const validateAggregateToBeFromEitherInputTypes = (value, helpers) => {
 			...aggregationsWithDoubleInputs,
 		];
 
+		validInputs.sort();
+
 		return helpers.message({
 			custom: `${pathObj[0]}[${pathObj[1]}].${
 				pathObj[2]
