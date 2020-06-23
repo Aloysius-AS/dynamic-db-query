@@ -19,6 +19,7 @@ const VECTOR_AGGREGATION_TYPES = {
 	MIN: 'min',
 	MODE: 'mode',
 	POP_CORR_COEFFICIENT: 'population correlation coefficient',
+	POP_EXCESS_KURTOSIS: 'population excess kurtosis',
 	POP_STD_DEV: 'population standard deviation',
 	POPULATION_VARIANCE: 'population variance',
 	RANGE: 'range',

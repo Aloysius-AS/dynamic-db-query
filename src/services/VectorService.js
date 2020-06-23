@@ -241,6 +241,17 @@ class VectorService {
 						};
 						break;
 
+					case VECTOR_AGGREGATION_TYPES.POP_EXCESS_KURTOSIS:
+						let popExcessKurtosis = this.processPopulationExcessKurtosis(
+							columns,
+							cleanDataIndividualColumn
+						);
+						aggregatedResult[columns] = {
+							...aggregatedResult[columns],
+							'population excess kurtosis': popExcessKurtosis,
+						};
+						break;
+
 					case VECTOR_AGGREGATION_TYPES.POP_STD_DEV:
 						let popStdDev = this.processPopulationStandardDeviation(
 							columns,
@@ -469,6 +480,15 @@ class VectorService {
 		);
 
 		return popCorrelationCoefficient;
+	}
+
+	processPopulationExcessKurtosis(columns, data) {
+		logger.debug(`performing population excess kurtosis on ${columns[0]}`);
+
+		let dataToBeAggregated = data[columns[0]];
+		let result = jStat.kurtosis(dataToBeAggregated);
+
+		return result;
 	}
 
 	processPopulationStandardDeviation(columns, data) {
