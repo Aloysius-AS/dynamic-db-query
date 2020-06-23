@@ -215,6 +215,17 @@ class VectorService {
 						};
 						break;
 
+					case VECTOR_AGGREGATION_TYPES.MODE:
+						let modeValue = this.processMode(
+							columns,
+							cleanDataIndividualColumn
+						);
+						aggregatedResult[columns] = {
+							...aggregatedResult[columns],
+							mode: modeValue,
+						};
+						break;
+
 					case VECTOR_AGGREGATION_TYPES.POP_CORR_COEFFICIENT:
 						let popCorrelationCoefficient = this.processPopulationCorrelationCoefficient(
 							columns,
@@ -406,6 +417,15 @@ class VectorService {
 
 		let dataToBeAggregated = data[columns[0]];
 		let result = jStat.min(dataToBeAggregated);
+
+		return result;
+	}
+
+	processMode(columns, data) {
+		logger.debug(`performing mode on ${columns[0]}`);
+
+		let dataToBeAggregated = data[columns[0]];
+		let result = jStat.mode(dataToBeAggregated);
 
 		return result;
 	}
