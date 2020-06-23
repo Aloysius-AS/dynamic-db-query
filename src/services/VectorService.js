@@ -321,6 +321,17 @@ class VectorService {
 							'sum of squared errors': sumOfSquaredErrorsValue,
 						};
 						break;
+
+					case VECTOR_AGGREGATION_TYPES.SUM_SQUARED:
+						let sumSquaredValue = this.processSumSquared(
+							columns,
+							cleanDataIndividualColumn
+						);
+						aggregatedResult[columns] = {
+							...aggregatedResult[columns],
+							'sum squared': sumSquaredValue,
+						};
+						break;
 				}
 			});
 		});
@@ -524,6 +535,15 @@ class VectorService {
 
 		let dataToBeAggregated = data[columns[0]];
 		let result = jStat.sumsqerr(dataToBeAggregated);
+
+		return result;
+	}
+
+	processSumSquared(columns, data) {
+		logger.debug(`performing sum squared on ${columns[0]}`);
+
+		let dataToBeAggregated = data[columns[0]];
+		let result = jStat.sumsqrd(dataToBeAggregated);
 
 		return result;
 	}

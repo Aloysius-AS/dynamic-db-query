@@ -27,6 +27,7 @@ const VECTOR_AGGREGATION_TYPES = {
 	SKEWNESS: 'skewness',
 	SUM: 'sum',
 	SUM_OF_SQUARED_ERRORS: 'sum of squared errors',
+	SUM_SQUARED: 'sum squared',
 };
 
 // Statistical Test API
