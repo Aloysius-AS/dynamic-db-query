@@ -104,7 +104,6 @@ class VectorService {
 
 			aggregates.forEach((aggregate) => {
 				switch (aggregate) {
-					// TODO: Add in other aggregation functions
 					case VECTOR_AGGREGATION_TYPES.COEFFICIENT_VARIATION:
 						let coefficientOfVariationValue = this.processCoefficientOfVariation(
 							columns,
