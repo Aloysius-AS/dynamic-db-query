@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const { jStat } = require('jstat');
+const mathjs = require('mathjs');
 
 const { VECTOR_AGGREGATION_TYPES } = require('../constants');
 const logger = require('../../logger');
@@ -285,6 +286,17 @@ class VectorService {
 						};
 						break;
 
+					case VECTOR_AGGREGATION_TYPES.QUARTILE:
+						let quartileValue = this.processQuartile(
+							columns,
+							cleanDataIndividualColumn
+						);
+						aggregatedResult[columns] = {
+							...aggregatedResult[columns],
+							quartile: quartileValue,
+						};
+						break;
+
 					case VECTOR_AGGREGATION_TYPES.SAMPLE_STANDARD_DEVIATION:
 						let sampleStdevValue = this.processSampleStandardDeviation(
 							columns,
@@ -505,6 +517,20 @@ class VectorService {
 
 		let dataToBeAggregated = data[columns[0]];
 		let result = jStat.variance(dataToBeAggregated);
+
+		return result;
+	}
+
+	processQuartile(columns, data) {
+		logger.debug(`performing quartile on ${columns[0]}`);
+
+		let dataToBeAggregated = data[columns[0]];
+		dataToBeAggregated.sort((a, b) => a - b);
+		let result = mathjs.quantileSeq(
+			dataToBeAggregated,
+			[0.25, 0.5, 0.75],
+			true
+		);
 
 		return result;
 	}
