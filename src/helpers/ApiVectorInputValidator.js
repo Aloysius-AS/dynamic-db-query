@@ -90,6 +90,10 @@ const aggregationsWithDoubleInputs = [
  * @param {*} aggregates
  */
 const existsInAggregateRequiringSingleInput = (aggregates) => {
+	if (aggregates.length === 0) {
+		return false;
+	}
+
 	const existsInAggregationsWithSingleInput = aggregates.every((aggregate) =>
 		aggregationsWithSingleInput.includes(aggregate)
 	);
@@ -103,6 +107,10 @@ const existsInAggregateRequiringSingleInput = (aggregates) => {
  * @param {*} aggregates
  */
 const existsInAggregateRequiringDoubleInputs = (aggregates) => {
+	if (aggregates.length === 0) {
+		return false;
+	}
+
 	const existsInAggregationsWithDoubleInput = aggregates.every((aggregate) =>
 		aggregationsWithDoubleInputs.includes(aggregate)
 	);
