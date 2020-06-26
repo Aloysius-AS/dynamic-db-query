@@ -83,23 +83,27 @@ const aggregationsWithDoubleInputs = [
 	VECTOR_AGGREGATION_TYPES.POP_CORR_COEFFICIENT,
 ];
 
-const existsInAggregateRequiringSingleInput = (value) => {
-	const existsInAggregationsWithSingleInput = aggregationsWithSingleInput.some(
-		(aggregation) => {
-			const result = value.includes(aggregation);
-			return result;
-		}
+/**
+ * Checks that all aggregate functions requested by users are
+ * within the list of supported aggregation functions which takes in single vector as param
+ * @param {*} aggregates
+ */
+const existsInAggregateRequiringSingleInput = (aggregates) => {
+	const existsInAggregationsWithSingleInput = aggregates.every((aggregate) =>
+		aggregationsWithSingleInput.includes(aggregate)
 	);
 
 	return existsInAggregationsWithSingleInput;
 };
 
-const existsInAggregateRequiringDoubleInputs = (value) => {
-	const existsInAggregationsWithDoubleInput = aggregationsWithDoubleInputs.some(
-		(aggregation) => {
-			const result = value.includes(aggregation);
-			return result;
-		}
+/**
+ * Checks that all aggregate functions requested by users are
+ * within the list of supported aggregation functions which takes in 2 vectors as param
+ * @param {*} aggregates
+ */
+const existsInAggregateRequiringDoubleInputs = (aggregates) => {
+	const existsInAggregationsWithDoubleInput = aggregates.every((aggregate) =>
+		aggregationsWithDoubleInputs.includes(aggregate)
 	);
 
 	return existsInAggregationsWithDoubleInput;
@@ -114,15 +118,15 @@ const existsInAggregateRequiringDoubleInputs = (value) => {
  *
  * Aggregate should fail validation when it is ["mean", "covariance"].
  */
-const validateAggregateNotToRequireMixInputTypes = (value, helpers) => {
+const validateAggregateNotToRequireMixInputTypes = (values, helpers) => {
 	const pathObj = helpers.state.path;
 
 	const existsInAggregationsWithSingleInput = existsInAggregateRequiringSingleInput(
-		value
+		values
 	);
 
 	const existsInAggregationsWithDoubleInput = existsInAggregateRequiringDoubleInputs(
-		value
+		values
 	);
 
 	if (
@@ -141,15 +145,15 @@ const validateAggregateNotToRequireMixInputTypes = (value, helpers) => {
 	return undefined;
 };
 
-const validateAggregateToBeFromEitherInputTypes = (value, helpers) => {
+const validateAggregateToBeFromEitherInputTypes = (values, helpers) => {
 	const pathObj = helpers.state.path;
 
 	const existsInAggregationsWithSingleInput = existsInAggregateRequiringSingleInput(
-		value
+		values
 	);
 
 	const existsInAggregationsWithDoubleInput = existsInAggregateRequiringDoubleInputs(
-		value
+		values
 	);
 
 	if (
@@ -173,9 +177,9 @@ const validateAggregateToBeFromEitherInputTypes = (value, helpers) => {
 	return undefined;
 };
 
-const validateAggregate = (value, helpers) => {
+const validateAggregate = (values, helpers) => {
 	const aggregateContainsMixInputTypes = validateAggregateNotToRequireMixInputTypes(
-		value,
+		values,
 		helpers
 	);
 
@@ -184,7 +188,7 @@ const validateAggregate = (value, helpers) => {
 	}
 
 	const aggregateNotInBothInputTypes = validateAggregateToBeFromEitherInputTypes(
-		value,
+		values,
 		helpers
 	);
 
@@ -193,7 +197,7 @@ const validateAggregate = (value, helpers) => {
 	}
 
 	// Pass custom validation. Return the value unchanged
-	return value;
+	return values;
 };
 
 const apiInputValidationSchema = Joi.object()
