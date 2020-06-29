@@ -4,13 +4,41 @@ const expect = require('chai').expect;
 
 const VectorService = require('../../src/services/VectorService');
 
-describe('Generating correct object after aggregation', function () {
+describe('Aggregation Vector', function () {
+	let initData = () => {
+		return {
+			data: [
+				{
+					height: 1,
+					weight: 10,
+				},
+				{
+					height: 2,
+					weight: 20,
+				},
+				{
+					height: 3,
+					weight: 30,
+				},
+				{
+					height: 4,
+					weight: 40,
+				},
+				{
+					height: 5,
+					weight: 50,
+				},
+			],
+			columns: ['height', 'weight'],
+		};
+	};
 	describe('Single column aggregation request', function () {
 		let data,
 			columns = [];
 
 		beforeEach(function () {
-			initData();
+			data = initData().data;
+			columns = initData().columns;
 		});
 
 		describe('Mean', function () {
@@ -25,24 +53,96 @@ describe('Generating correct object after aggregation', function () {
 				let vectorService = new VectorService(data, columns);
 				let result = vectorService.processAggregation(stats);
 
-				expect(result).to.deep.equal({ height: { mean: 1.65 } });
+				expect(result).to.deep.equal({ height: { mean: 3 } });
 			});
 		});
 
-		const initData = () => {
-			data = [
+		describe('Min and Max', function () {
+			it('Should return a single JSON object with the min, max property and min, max value calculated correctly', function () {
+				let stats = [
+					{
+						column: ['height'],
+						aggregate: ['min', 'max'],
+					},
+				];
+
+				let vectorService = new VectorService(data, columns);
+				let result = vectorService.processAggregation(stats);
+
+				let expectedResult = {
+					height: { min: 1, max: 5 },
+				};
+
+				expect(result).to.deep.equal(expectedResult);
+			});
+		});
+	});
+
+	describe('Double columns aggregation request', function () {
+		let data,
+			columns = [];
+
+		beforeEach(function () {
+			data = initData().data;
+			columns = initData().columns;
+		});
+
+		it('Should calculate covariance and population correlation coefficient correctly', function () {
+			let stats = [
 				{
-					height: 1.8,
-					weight: 80,
-				},
-				{
-					height: 1.5,
-					weight: 60,
+					column: ['height', 'weight'],
+					aggregate: ['covariance', 'population correlation coefficient'],
 				},
 			];
 
-			columns = ['height', 'weight'];
-		};
+			let vectorService = new VectorService(data, columns);
+			let result = vectorService.processAggregation(stats);
+
+			let expectedResult = {
+				'height,weight': {
+					covariance: 25,
+					'population correlation coefficient': 1,
+				},
+			};
+
+			expect(result).to.deep.equal(expectedResult);
+		});
+	});
+
+	describe('Mixed columns aggregation request', function () {
+		let data,
+			columns = [];
+
+		beforeEach(function () {
+			data = initData().data;
+			columns = initData().columns;
+		});
+
+		it('Should return the correct aggregation object when both single and double columns aggregation requests are requested', function () {
+			let stats = [
+				{
+					column: ['height'],
+					aggregate: ['min', 'max'],
+				},
+				{
+					column: ['height', 'weight'],
+					aggregate: ['covariance', 'population correlation coefficient'],
+				},
+			];
+
+			let vectorService = new VectorService(data, columns);
+			let result = vectorService.processAggregation(stats);
+
+			let expectedResult = {
+				height: { min: 1, max: 5 },
+				'height,weight': {
+					covariance: 25,
+					'population correlation coefficient': 1,
+				},
+			};
+
+			expect(result).to.deep.equal(expectedResult);
+		});
 	});
 
 	describe('Dirty data', function () {
