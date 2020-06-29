@@ -192,7 +192,7 @@ describe('Aggregation Vector Validation', function () {
 
 		let expectedResult = {
 			errorType: 'Invalid JSON request',
-			errorMessage: '"stats[0].column" must contain 1 item',
+			errorMessage: '"stats[0].column" must contain 1 items',
 		};
 
 		expect(result.statusCode).to.equal(400);

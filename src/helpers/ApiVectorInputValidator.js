@@ -67,7 +67,7 @@ const aggregationsWithDoubleInputs = VECTOR_AGGREGATION_TYPES_DOUBLE_VECTOR_PARA
  * within the list of supported aggregation functions which takes in single vector as param
  * @param {*} aggregates
  */
-const existsInAggregateRequiringSingleInput = (aggregates) => {
+const allSingleInputAggregates = (aggregates) => {
 	if (aggregates.length === 0) {
 		return false;
 	}
@@ -84,7 +84,7 @@ const existsInAggregateRequiringSingleInput = (aggregates) => {
  * within the list of supported aggregation functions which takes in 2 vectors as param
  * @param {*} aggregates
  */
-const existsInAggregateRequiringDoubleInputs = (aggregates) => {
+const allDoubleInputsAggregates = (aggregates) => {
 	if (aggregates.length === 0) {
 		return false;
 	}
@@ -94,6 +94,40 @@ const existsInAggregateRequiringDoubleInputs = (aggregates) => {
 	);
 
 	return existsInAggregationsWithDoubleInput;
+};
+
+/**
+ * Checks that there is at least one aggregate function which takes
+ * in single vector as param
+ * @param {*} aggregates
+ */
+const atLeastOneSingleInputAggregate = (aggregates) => {
+	if (aggregates.length === 0) {
+		return false;
+	}
+
+	let atLeastOneAggregationWithSingleInput = aggregates.some((aggregate) =>
+		aggregationsWithSingleInput.includes(aggregate)
+	);
+
+	return atLeastOneAggregationWithSingleInput;
+};
+
+/**
+ * Checks that there is at least one aggregate function which takes
+ * in two vectors as param
+ * @param {*} aggregates
+ */
+const atLeastOneDoubleInputAggregate = (aggregates) => {
+	if (aggregates.length === 0) {
+		return false;
+	}
+
+	let atLeastOneAggregationWithDoubleInput = aggregates.some((aggregate) =>
+		aggregationsWithDoubleInputs.includes(aggregate)
+	);
+
+	return atLeastOneAggregationWithDoubleInput;
 };
 
 /**
@@ -108,11 +142,11 @@ const existsInAggregateRequiringDoubleInputs = (aggregates) => {
 const validateAggregateNotToRequireMixInputTypes = (values, helpers) => {
 	const pathObj = helpers.state.path;
 
-	const existsInAggregationsWithSingleInput = existsInAggregateRequiringSingleInput(
+	const existsInAggregationsWithSingleInput = atLeastOneSingleInputAggregate(
 		values
 	);
 
-	const existsInAggregationsWithDoubleInput = existsInAggregateRequiringDoubleInputs(
+	const existsInAggregationsWithDoubleInput = atLeastOneDoubleInputAggregate(
 		values
 	);
 
@@ -132,16 +166,17 @@ const validateAggregateNotToRequireMixInputTypes = (values, helpers) => {
 	return undefined;
 };
 
+/**
+ * Method to check whether if all the aggregate inputs are from either
+ * - aggregation functions that take in a single array parameter, or,
+ * - aggregation functions that take in a double array parameters
+ */
 const validateAggregateToBeFromEitherInputTypes = (values, helpers) => {
 	const pathObj = helpers.state.path;
 
-	const existsInAggregationsWithSingleInput = existsInAggregateRequiringSingleInput(
-		values
-	);
+	const existsInAggregationsWithSingleInput = allSingleInputAggregates(values);
 
-	const existsInAggregationsWithDoubleInput = existsInAggregateRequiringDoubleInputs(
-		values
-	);
+	const existsInAggregationsWithDoubleInput = allDoubleInputsAggregates(values);
 
 	if (
 		!existsInAggregationsWithSingleInput &&
@@ -196,15 +231,13 @@ const apiInputValidationSchema = Joi.object()
 				column: Joi.required()
 					.when('aggregate', {
 						is: Joi.array().items(
-							VECTOR_AGGREGATION_TYPES.COVARIANCE,
-							VECTOR_AGGREGATION_TYPES.POP_CORR_COEFFICIENT
+							...VECTOR_AGGREGATION_TYPES_DOUBLE_VECTOR_PARAM
 						),
 						then: Joi.array().items().length(2), // when aggregate contains 'covariance' or 'population correlation coefficient', then columns must have 2 items
 					})
 					.when('aggregate', {
 						is: Joi.array().items(
-							VECTOR_AGGREGATION_TYPES.MEAN,
-							VECTOR_AGGREGATION_TYPES.POP_STD_DEV
+							...VECTOR_AGGREGATION_TYPES_SINGLE_VECTOR_PARAM
 						),
 						then: Joi.array().items().length(1),
 					}),
